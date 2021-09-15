@@ -1,10 +1,10 @@
 # Seagate-Central-Tips
 Tips for optimizing the Seagate Central NAS device.
 
-This is a collection of optimizations and configuration changes
-I've made on my own Seagate Central NAS device to make it more
-useable. Most of these instructions assume you have su/root
-access to your Seagate Central.
+This is a collection of suggestions, optimizations and 
+configuration changes I've made on my own Seagate Central NAS
+device to make it more useable. Most of these instructions 
+assume you have su/root access to your Seagate Central.
 
 Please also refer to the following associated projects
 for further information about enhancing the Seagate Central
@@ -31,7 +31,7 @@ and support for more modern services.
 https://github.com/bertofurth/Seagate-Central-Utils
 
 Instructions for building and installing a variety of new tools
-and services on the Seagate Central
+and services on the Seagate Central.
 
 ### Seagate-Central-Toolchain
 https://github.com/bertofurth/Seagate-Central-Toolchain
@@ -41,7 +41,7 @@ host to compile new software for the Seagate Central.
 
 ## Allow multiple users to access a Samba share
 By default, only the user who is the owner of a network share is
-allowed to access it. It might be useful for specific other users 
+allowed to access it. It might be useful for multiple users 
 to be able to access particular shares.
 
 This can be accomplished by manually editing the text configuration
@@ -62,7 +62,7 @@ user "fred" we have
 
 We can allow user "ginger" to also be granted access to this folder
 by adding her username to the "valid users" option as follows. Note
-that we have *removed the double quotes*. 
+that we have **removed the double quotes**. 
 
     [fred]
     ...
@@ -77,7 +77,7 @@ for the change to survive a system reboot.
     cp /usr/private/user_smb_conf/.overall_share /usr/config/backupconfig/usr/private/user_smb_conf/.overall_share
     
 An optional but useful step is to run the "testparm" command which will
-confirm that the changes you have made are compatible with the Samba
+confirm that the changes you have made are compatible with the samba
 service. Any erroneous entries will be noted by the output of this
 command. 
     
@@ -129,14 +129,16 @@ The changes will take effect on the next reboot.
 
 ### Tappin remote access service
 The Tappin remote access service was a service that allowed users
-to remotely access content on their Seagate Central. The service
+to remotely access content on their Seagate Central. This service
 has been shutdown for some time as per the notice at
 
 https://www.seagate.com/au/en/support/kb/seagate-central-tappin-update-007647en/
 
+Run the following command to disable the Tappin service.
+
      update-rc.d -f tappinAgent remove
      
-Reinstate this service with the following command (but why??)
+Reinstate this service with the following command (but why would you??)
 
      update-rc.d tappinAgent defaults 85
 
@@ -146,23 +148,29 @@ by registering an account with Seagate. Note this is different to the
 DLNA service that provides access to media for player devices on your
 home network.
 
+Run the following commands to disable the Media Server.
+
     update-rc.d -f media_server_daemon remove
     update-rc.d -f media_server_ui_daemon remove
     update-rc.d -f media_server_allow_scan remove
+    update-rc.d -f media_server_default_start remove
 
-Reinstate this service with the following commands
+Reinstate this service with the following commands.
 
     update-rc.d media_server_daemon defaults 19 
     update-rc.d media_server_ui_daemon defaults 69 
     update-rc.d media_server_allow_scan defaults 98 
+    update-rc.d media_server_default_start defaults 99
     
 ### Facebook archiver
 A service where your Seagate Central saves content posted on your
-Facebook page. 
+Facebook page.
+
+Run the following command to disable the Facebook archiver.
 
     update-rc.d -f fbarchived remove
 
-Reinstate this service with the following command
+Reinstate this service with the following command.
 
     update-rc.d media_server_daemon defaults 99
 
@@ -179,9 +187,9 @@ This cache can be cleared with the following command.
 
     rm /var/lib/usage.cache
 
-The process that calculates disk usage runs at 3am each morning
-or after a system reboot if the cache is empty. You can manually
-invoke the process with the following command.
+The process that calculates disk usage for the pie chart is scheduled
+to run at 3am each morning. You can manually invoke the process with
+the following command.
 
     /usr/bin/get_usage_info.sh --update_cache
     
