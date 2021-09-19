@@ -197,33 +197,20 @@ Note that the process of calculating disk usage takes a long time
 and is quite CPU intensive because the entire directory tree of the
 Data volume needs to be probed.
 
+## Other cross compiled tools
+I have installed the following useful tools that I haven't explicitly
+generated cross compilation instructions for
 
+### DDH - Directory Differential hTool (Rust)
+A tool that efficiently finds duplicate files.
 
+https://github.com/darakian/ddh
 
-    
+Use the same Rust cross compilation procedure as the "diskus" tool
+in the **Seagate-Central-Utils** project.
 
-
-
-
-You may have noticed that every now and then after a reboot the
-Seagate Central spends a long time trying to calculate the usage
-of each user.
-
-It takes a long time and lots of CPU cycles to do so because it
-uses the busybox form of the "du" command which has to manually
-search through each and every directory on the user Data volume
-to calculate disk usage.
-
-This process can be made much quicker and more efficient by
-installing
-
-
-
-
-
-/usr/bin/get_usage_info.sh![image](https://user-images.githubusercontent.com/53927348/133401643-da6362d3-f873-4600-bff0-103f455f9fca.png)
-
-
-mkdir -p sc-libs/usr/lib
-     
-     
+Being able to quickly find duplicates throughut a complicated 
+directory structure is a great way to save disk space. Being able to
+do this on the Seagate Central itself is much faster than running a
+tool like "Anti-Twin" or "Duplicate Detector" on a network connected
+PC.
