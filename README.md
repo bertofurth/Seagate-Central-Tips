@@ -17,7 +17,7 @@ A replacement Samba server for the Seagate Central that fixes
 the severe security issues with the old SMBv1.0 protocol and allows
 modern security conscious clients like Windows 10 to connect
 seamlessly to the Seagate Central. This project also provides
-and easy method to restore su/root access on a Seagate Central
+an easy method to restore su/root access on a Seagate Central
 device.
  
 ### Seagate-Central-Slot-In-v5.x-Kernel
