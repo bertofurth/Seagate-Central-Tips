@@ -188,14 +188,15 @@ This cache can be cleared with the following command.
     rm /var/lib/usage.cache
 
 The process that calculates disk usage for the pie chart is scheduled
-to run at 3am each morning. You can manually invoke the process with
+to run at 3am each morning or if the Web Management interface is
+opened and the cache is empty. You can manually invoke the process with
 the following command.
 
     /usr/bin/get_usage_info.sh --update_cache
     
-Note that the process of calculating disk usage takes a long time
-and is quite CPU intensive because the entire directory tree of the
-Data volume needs to be probed.
+Note that the process of calculating disk usage can take a very long
+time and is quite CPU intensive because the entire directory tree of
+the Data volume needs to be probed.
 
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
