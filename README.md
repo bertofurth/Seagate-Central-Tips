@@ -110,7 +110,6 @@ Note, if you get an error message "setpwnam: File exists" then this
 can be overcome by deleting "/etc/ptmp" and running the chsh command
 again.
 
-
 ## Disable unneeded services
 The Seagate Central comes with a number of services that are not
 useful to everyone. 
@@ -197,6 +196,23 @@ the following command.
 Note that the process of calculating disk usage can take a very long
 time and is quite CPU intensive because the entire directory tree of
 the Data volume needs to be probed.
+
+## USB Hubs
+While USB hubs work with the Seagate Central to allow you to
+connect multiple storage devices and even other types of USB
+devices, they are not very reliable if they are "unpowered".
+
+While testing the USB Video camera functionality as seen at
+
+https://github.com/bertofurth/Seagate-Central-Slot-In-v5.x-Kernel/blob/main/README_USB_DEVICE_MODULES.md
+
+and
+
+https://github.com/bertofurth/Seagate-Central-Utils/blob/main/motion/README-motion.md
+
+I found that USB cameras connected to an unpowered hub would sometimes
+reset unexpectedly, but when they were directly connected to the 
+Seagate Central there were no problems.
 
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
