@@ -232,6 +232,13 @@ see what's in the home directory belonging to "fred" then the following
 command can be issued as root.
 
     chmod 700 ~fred
+    
+Some administrators prefer to use mode "711" since some servers need to
+be able to traverse some user's directories but not read the contents.
+
+Future user's home directories can be created with different permissions
+by modifying the permissons of the "/etc/skel" folder that is duplicated
+when a new user's home directory is created.
 
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
