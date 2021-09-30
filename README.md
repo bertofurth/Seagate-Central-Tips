@@ -69,7 +69,7 @@ that we have **removed the double quotes**.
     valid users = fred ginger
     ...
     
-After this change is made the newly modifed
+After this change is made the newly modified
 "/usr/private/user_smb_conf/.overall_share" file need to be copied
 over to the Seagate Central backup configuration directory in order 
 for the change to survive a system reboot.
@@ -89,7 +89,7 @@ configuration in order for the changes to take effect.
     /etc/init.d/samba reload
     
 
-## Stop particular users from loging in with ssh.
+## Stop particular users from logging in via ssh.
 It may be that you have user accounts on the Seagate Central that have
 no legitimate reason to establish ssh sessions to the Seagate Central.
 
@@ -237,8 +237,8 @@ Some administrators prefer to use mode "711" since some servers need to
 be able to traverse some user's directories but not read the contents.
 
 Future user's home directories can be created with different permissions
-by modifying the permissons of the "/etc/skel" folder that is duplicated
-when a new user's home directory is created.
+by modifying the permissions of the "/etc/skel" folder. This folder is
+duplicated when a new user's home directory is created.
 
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
@@ -252,7 +252,7 @@ https://github.com/darakian/ddh
 Use the same Rust cross compilation procedure as the "diskus" tool
 in the **Seagate-Central-Utils** project.
 
-Being able to quickly find duplicates throughut a complicated 
+Being able to quickly find duplicates throughout a complicated 
 directory structure is a great way to save disk space. Being able to
 do this on the Seagate Central itself is much faster than running a
 tool like "Anti-Twin" or "Duplicate Detector" on a network connected
