@@ -214,6 +214,25 @@ I found that USB cameras connected to an unpowered hub would sometimes
 reset unexpectedly, but when they were directly connected to the 
 Seagate Central there were no problems.
 
+## User home directory security problem
+By default on the Seagate Central, user's home directories are 
+writeable by every other user!
+
+This means that one user "fred" can login to the Seagate Central via
+ssh and not only view all of the files belonging to another user "ginger",
+he can change and delete them as well!
+
+To setup the home directory of "ginger" so that other users can read
+the contents of it but not change it, issue the following command as root.
+
+    chmod 755 ~ginger
+     
+Further to that, if you do not wish other users to be able to even
+see what's in the home directory belonging to "fred" then the following
+command can be issued as root.
+
+    chmod 700 ~fred
+
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
 generated cross compilation instructions for
