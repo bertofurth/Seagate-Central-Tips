@@ -83,8 +83,9 @@ command.
     
     testparm
     
-Finally, the samba service needs to be commanded to reload the modified
-configuration in order for the changes to take effect.
+Finally, the samba service needs to be reloaded for the changes to
+take effect. This can be done by rebooting the unit or by running the
+following command.
 
     /etc/init.d/samba reload
     
