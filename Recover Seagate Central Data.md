@@ -2,33 +2,27 @@
 If you have a Seagate Central that has stopped functioning then it may 
 be necessary to manually extract the data stored on the Central's
 internal hard drive. This document discusses how to accomplish this
-using a Windows 10 based system and software from Paragon. We also discuss
+using a Windows 10 based system and software from Paragon. We then discuss
 some technical reasons why recovering data from a Seagate Central hard
 drive is particularly complicated, even in a Linux environment. We then
 present some very brief instructions on how to mount the Seagate Central 
 drive under Linux.
 
-In summary, because of the peculiarities of the Seagate Central drive format,
-it's much easier to do data recovery using Windows than Linux.
-
-
-# Unfinished!! NOT READY FOR USE!!!
-
-
-
-
-
-
-## TLDNR 
-
-* Remove the hard drive from the Seagate Central
-* Connect the hard drive to an external USB hard drive reader 
+## TLDNR - Windows
+* Connect the Seagate Central hard drive to an external USB hard drive reader 
 * Install and run "Linux File Systems for Windows by Paragon Software" on your Windows PC.
 * Put the Paragon tool into "Read-only" mode.
 * Connect the drive reader to your Windows machine
 * **DO NOT LET WINDOWS FORMAT OR WRITE TO THE DRIVE**
 * Take note of the assigned drive letter for the Data partition
 * Copy the required data to another device using Windows Explorer
+
+## TLDNR - Linux
+* Connect the Seagate Central hard drive to an external hard drive reader
+* Install the "lvm" and "e2fsprogs" packages on your Linux system
+* Connect the drive reader to your Linux system
+* Use the lvdisplay command to identify the Data parition LVM path
+* Mount the Data partition with the fuse2fs tool
 
 ## Prerequisites
 ### Be able to open up the Seagate Central
@@ -42,7 +36,7 @@ a flat head pry tool to get the face plate and lid off the unit.
 ### A USB connected Hard Drive Reader / Adapter
 You'll need a USB hard drive reader suitable for a 3.5 inch SATA drive
 as used inside the Seagate Central. You can buy these at most electronics
-stores or websites for around US$30.
+stores or websites for around US$30. 
 
 The alternative is to install the Seagate Central hard drive inside your Windows 
 computer. This assumes that you are using a desktop computer with enough room 
@@ -126,11 +120,11 @@ reasonably priced for the functionality it provides.
 After the software is installed, run it. Once activated it should 
 automatically scan all the drives connected to your system.
 
-I would then highly recommend changing the default behavior of the program
+I would then highly recommend changing the default behaviour of the program
 so that it does not automatically mount partitions and so that it mounts them
-as read-only by default. This can be done by clicking on the three horizonal lines menu
-item to the right of "Sign in", then clicking on "Settings" then turning 
-"Mount automatically" to "Off" and setting "Mount volumes in"
+as read-only by default. This can be done by clicking on the three horizonal
+lines menu item to the right of "Sign in", then clicking on "Settings" then
+turning "Mount automatically" to "Off" and setting "Mount volumes in"
 to "Read-only". This will ensure that Windows does not accidentally overwrite
 critical data on the Seagate Central drive.
 
@@ -169,7 +163,7 @@ should show the new drives being recognized.
 
 If you scroll down through the list of recognized partitions on the left hand side of
 the app window, down the bottom under a section titled "lvm1" you should see the very
-large 2000 to 5000 GB partition called "Data". This is the partition we are interested
+large 1500 to 5000 GB partition called "Data". This is the partition we are interested
 in. 
 
 If you have configured the Paragon tool so that it does not automatically mount
@@ -197,14 +191,14 @@ on the Seagate Central.
 You can ignore the following directories because they only contain Seagate Central
 operating system specific data which will not likely be of interest.
 
-.GoFlexData
-.uploads
-anonftp
-dbd
-lost+found
-mt-daapd
-twonky
-TwonkyData
+    .GoFlexData
+    .uploads
+    anonftp
+    dbd
+    lost+found
+    mt-daapd
+    twonky
+    TwonkyData
 
 Also ignore any directories with the ".tm" suffix at the end
 
@@ -224,22 +218,22 @@ data over quickly so that you can ensure it's all retrieved before the software
 expires.
 
 
-## Postscript - Details for Professionals
+## Reasons why a Seagate Central Data partition is hard to access
 There are 3 things that make retrieving data from a Seagate Central hard drive
 difficult.
 
-1) ext4 Linux file system
+1) ext4 Linux file system :
 The Seagate Central Data partition is formatted using the ext4 file system which is
 not natively readable by Windows. Third party tools such as the Paragon Software
 mentioned in this document are generally needed.
 
-2) Logical Volume Management (LVM)
-The Data parition on a Seagate Central is organized as a Linux Volume Group (VG) using
+2) Logical Volume Management (LVM) :
+The Data partition on a Seagate Central is organized as a Linux Volume Group (VG) using
 Logical Volume Management (LVM). This means that some third party Windows software
 that can read ext4 partitions, still cannot read the Data volume. This also makes
 mounting the partition under Linux a little less straight forward.
 
-3) 64K partition page size 
+3) 64K partition page size :
 The Data partition on a Seagate Central is formatted using a non standard 64K page size. 
 Many Windows based ext4 disk reading utilities can only read partitions formatted 
 using the standard 4K page size. In fact, many Linux distributions will also have
@@ -247,51 +241,92 @@ difficulty mounting such a volume. This is because Linux can only natively mount
 volumes that use a page size no greater than the system memory page size which is
 typically set at 4K. 
 
-The "Linux File Systems for Windows by Paragon Software" seemed to be able to 
+The "Linux File Systems for Windows by Paragon Software" seems to be able to 
 overcome all of these limitations.
 
-We tested a number of other ext4 for Windows software pacakges and they were unable
+We tested a number of other ext4 for Windows software packages and they were unable
 to read the Seagate Central Data partition for at least one of the above reasons.
-These other applications included
-
-Ext2FSD
-Diskinternals Linux Reader
-Ext2Read (AKA Ext2explore)
+These other applications included "Ext2FSD", "Diskinternals Linux Reader" and
+"Ext2Read (AKA Ext2explore)".
 
 If you happen to know of any other software for Windows besides the Paragon tool
 that can access the Seagate Central Data partition then please log an issue
 in this project and let us know. 
 
 ## Mounting a Seagate Central hard drive under Linux
-For the reasons listed above, mounting an externally attached Seagate Central hard
-drive under Linux is not straight forward. The main obstacle to overcome is the
-64K page size for the Data partition.
+For the reasons listed above, mounting a Seagate Central Data partition under 
+Linux is not straight forward. The main obstacle to overcome is the
+64K page size used for the Data partition.
 
-In summary, mounting such a volume under Linux requires that you recomile your
-system's kernel to use a 64K page size so that it becomes capable of reading the
-Data partition. By default, most Linux distributions use a 4K page size.
+If normal mounting procedures are followed in Linux then an error message
+of the following kind may appear at the command line and in the system logs.
 
-Recompiling the Linux Kernel for your specific Linux distribution is beyond the
-scope of this document however for most major distributions many guides can be found.
+    root# mount /dev/vg1/lv1 /mnt/tmp
+    mount: /mnt/tmp: wrong fs type, bad option, bad superblock on /dev/mapper/vg1-lv1, missing codepage or helper program, or other error.
 
-The key is to ensure the CONFIG_PAGE_SIZE_64K option is set when the kernel
-is recompiled.
+    EXT4-fs (dm-0): bad block size 65536
 
+The easiest way to deal with this issue is to mount the partition using the
+fuse2fs utility which is part of the e2fsprogs package.
 
+The other, far less convenient alternative is to recompile the system's kernel
+to use a 64K page size (CONFIG_PAGE_SIZE_64K). This is not recommended as this
+would make memory allocation on your system less efficient.
 
-Check getconf PAGESIZE
+The brief procedure for mounting a Seagate Central Data volume using fuse2fs is
+as follows. Note that all of the following commands must be executed as the root 
+user or with the "sudo" prefix.
 
+First, make sure that the system has the "lvm2" and "e2fsprogs" packages installed. 
+For example, in Debian use the command
 
-List with fdisk -l
+    apt install lvm2 e2fsprogs
 
+Next, connect the USB drive reader containing the Seagate Central drive to the
+Linux system.
 
-How to mount data partition with vg commands
+Generate a list of available LVM partitions by running the "lvdisplay" command.
+Take a note of the LV Path corresponding to the Seagate Central data partition.
+Be careful if you have other LVM partitions active in your system to identify
+the correct partition path. In the example below the LV Path is /dev/vg1/lv1
 
-From there they can be copied.
+    root# lvdisplay
+    --- Logical volume ---
+    LV Path                /dev/vg1/lv1
+    LV Name                lv1
+    VG Name                vg1
+    LV UUID                PD3ZH2-GVlS-FRjB-XB3G-Pm3q-2VKQ-2D3hB7
+    LV Write Access        read/write
+    LV Creation host, time ,
+    LV Status              available
+    # open                 0
+    LV Size                2.72 TiB
+    Current LE             714106
+    Segments               1
+    Allocation             inherit
+    Read ahead sectors     auto
+    - currently set to     256
+    Block device           253:0
 
+Once the LV Path is discovered, mount the partition using the fuse2fs program
+as per the following example. In this example we are mounting the logical 
+partition /dev/vg1/lv1 at the mount point /mnt/tmp (Use an existing directory
+in your system as the mount point). Note that the volume can be mounted as
+read-only by adding the "-o ro" flag to the end of the command.
 
+    root# fuse2fs /dev/vg1/lv1 /mnt/tmp
+    /dev/vg1/lv1: Writing to the journal is not supported.
+    root# cd /mnt/tmp
+    root# ls    
+    admin  admin.tm  anonftp  dbd  lost+found  mt-daapd  Public  twonky  TwonkyData
 
+At this point the volume should be mounted in the /mnt/tmp directory and the
+data in the partition should be available for copying as normal. 
 
+Once you've finished using the parititon the volume can be unmounted as per the
+normal umount command as seen in the example below
+
+    root# umount /mnt/tmp
 
 
 
