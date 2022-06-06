@@ -1,9 +1,11 @@
 # Seagate-Central-Tips
-Tips for optimizing the Seagate Central NAS device.
+Tips for optimizing and fixing common problems on the Seagate
+Central NAS device.
 
-This is a collection of suggestions, optimizations and 
+This document is a collection of suggestions, optimizations and 
 configuration changes I've made on my own Seagate Central NAS
-device to make it more useable. Most of these instructions 
+device to make it more useable as well as some procedures that attempt
+to fix commonly encountered problems. Many of these instructions 
 assume you have su/root access to your Seagate Central.
 
 Please also refer to the following associated projects
