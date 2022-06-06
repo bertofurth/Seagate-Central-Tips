@@ -66,7 +66,7 @@ Feel free to pass this document along to them to facilitate their work.
 hard drive or write anything to the Seagate Central hard drive.** If you make
 sure to follow this important guideline then everything should be fine.
 
-## Procedure
+## Procedure for Windows
 ### Open the Seagate Central and Take out the Hard Drive
 As per the pre-requisites section, search for a video detailing instructions
 on opening the Seagate Central and how to pull out the hard drive.
@@ -253,7 +253,7 @@ If you happen to know of any other software for Windows besides the Paragon tool
 that can access the Seagate Central Data partition then please log an issue
 in this project and let us know. 
 
-## Mounting a Seagate Central hard drive under Linux
+## Procedure for Linux
 For the reasons listed above, mounting a Seagate Central Data partition under 
 Linux is not straight forward. The main obstacle to overcome is the
 64K page size used for the Data partition.
