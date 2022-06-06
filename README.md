@@ -143,10 +143,14 @@ Reinstate this service with the following command (but why would you??)
      update-rc.d tappinAgent defaults 85
 
 ### Seagate Media Server
-A service where you can view content on your Seagate Central remotely
-by registering an account with Seagate. Note this is different to the
-DLNA service that provides access to media for player devices on your
-home network.
+This was a service where you could view content on your Seagate Central 
+remotely or on your phone by registering an account with Seagate. This was
+discontinued as per the notice at
+
+https://www.seagate.com/au/en/support/downloads/seagate-media/
+
+Note this is different to the Twonky DLNA service that provides access to 
+media for player devices on your home network.
 
 Run the following commands to disable the Media Server.
 
