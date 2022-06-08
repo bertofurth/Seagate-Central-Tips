@@ -217,46 +217,11 @@ for 10 days after installation. For this reason I recommend that you copy the
 data over quickly so that you can ensure it's all retrieved before the software
 expires.
 
-
-## Reasons why a Seagate Central Data partition is hard to access
-There are 3 things that make retrieving data from a Seagate Central hard drive
-difficult.
-
-1) ext4 Linux file system :
-The Seagate Central Data partition is formatted using the ext4 file system which is
-not natively readable by Windows. Third party tools such as the Paragon Software
-mentioned in this document are generally needed.
-
-2) Logical Volume Management (LVM) :
-The Data partition on a Seagate Central is organized as a Linux Volume Group (VG) using
-Logical Volume Management (LVM). This means that some third party Windows software
-that can read ext4 partitions, still cannot read the Data volume. This also makes
-mounting the partition under Linux a little less straight forward.
-
-3) 64K partition page size :
-The Data partition on a Seagate Central is formatted using a non standard 64K page size. 
-Many Windows based ext4 disk reading utilities can only read partitions formatted 
-using the standard 4K page size. In fact, many Linux distributions will also have
-difficulty mounting such a volume. This is because Linux can only natively mount ext4 
-volumes that use a page size no greater than the system memory page size which is
-typically set at 4K. 
-
-The "Linux File Systems for Windows by Paragon Software" seems to be able to 
-overcome all of these limitations.
-
-We tested a number of other ext4 for Windows software packages and they were unable
-to read the Seagate Central Data partition for at least one of the above reasons.
-These other applications included "Ext2FSD", "Diskinternals Linux Reader" and
-"Ext2Read (AKA Ext2explore)".
-
-If you happen to know of any other software for Windows besides the Paragon tool
-that can access the Seagate Central Data partition then please log an issue
-in this project and let us know. 
-
 ## Procedure for Linux
-For the reasons listed above, mounting a Seagate Central Data partition under 
-Linux is not straight forward. The main obstacle to overcome is the
-64K page size used for the Data partition.
+Mounting a Seagate Central Data partition under Linux is not as straight forward
+as issuing the "mount" command for the appropriate partiton. This is because
+the Data partition is formatted using a 64K page size. See the Technical Discussion
+section below for more details.
 
 If normal mounting procedures are followed in Linux then an error message
 of the following kind may appear at the command line and in the system logs.
@@ -330,9 +295,123 @@ normal umount command as seen in the example below
 
 
 
+## Technical discussion
+### Reasons why a Seagate Central Data partition is hard to access
+There are 3 things that make retrieving data from a Seagate Central hard drive
+difficult.
 
+1) ext4 Linux file system :
+The Seagate Central Data partition is formatted using the ext4 file system which is
+not natively readable by Windows. Third party tools such as the Paragon Software
+mentioned in this document are generally needed.
 
+2) Logical Volume Management (LVM) :
+The Data partition on a Seagate Central is organized as a Linux Volume Group (VG) using
+Logical Volume Management (LVM). This means that some third party Windows software
+that can read ext4 partitions, still cannot read the Data volume. This also makes
+mounting the partition under Linux a little less straight forward.
 
+3) 64K partition page size :
+The Data partition on a Seagate Central is formatted using a non standard 64K page size. 
+Many Windows based ext4 disk reading utilities can only read partitions formatted 
+using the standard 4K page size. In fact, many Linux distributions will also have
+difficulty mounting such a volume. This is because Linux can only natively mount ext4 
+volumes that use a page size no greater than the system memory page size which is
+typically set at 4K. 
 
+The "Linux File Systems for Windows by Paragon Software" seems to be able to 
+overcome all of these limitations.
 
+We tested a number of other ext4 for Windows software packages and they were unable
+to read the Seagate Central Data partition for at least one of the above reasons.
+These other applications included "Ext2FSD", "Diskinternals Linux Reader" and
+"Ext2Read (AKA Ext2explore)".
+
+If you happen to know of any other software for Windows besides the Paragon tool
+that can access the Seagate Central Data partition then please log an issue
+in this project and let us know. 
+
+### The Layout of the Seagate Central Hard Drive
+The Seagate Central Hard drive contains a number of different partitions.
+
+Here we should the output of the "fdisk -l" command run on a Linux
+machine with the Seagate Central drive connected using a USB
+hard drive reader.
+
+    # fdisk -l
+    Disk /dev/sda: 2.73 TiB, 3000592982016 bytes, 5860533168 sectors
+    Disk model: 003-1F216N
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
+    Disklabel type: gpt
+    Disk identifier: C2FT0290-349D-3XV8-24L5-GD2R9SMV9213
+    
+    Device        Start        End    Sectors  Size Type
+    /dev/sda1      2048      43007      40960   20M Microsoft basic data
+    /dev/sda2     43008      83967      40960   20M Microsoft basic data
+    /dev/sda3     83968    2181119    2097152    1G Microsoft basic data
+    /dev/sda4   2181120    4278271    2097152    1G Microsoft basic data
+    /dev/sda5   4278272    6375423    2097152    1G Microsoft basic data
+    /dev/sda6   6375424    8472575    2097152    1G Linux swap
+    /dev/sda7   8472576   10569727    2097152    1G Microsoft basic data
+    /dev/sda8  10569728 5860533134 5849963407  2.7T Linux LVM
+    
+    
+    Disk /dev/mapper/vg1-lv1: 2.72 TiB, 2995177652224 bytes, 5849956352 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
+
+Note that on your system "/dev/sdX" may be a different letter depending on what
+other devices are active in your system.
+
+# sda1 and sda2 : 20M boot partitions
+These partitions contain the Linux kernel for the Seagate central system
+in a file called "uImage". 
+
+The kernel will be loaded from one or the other of these partitions depending
+on which one is active. That is, one of them is active and the other acts
+as a backup however it is not straightforward to determine which partition
+is currently active unless the Seagate Central is up and running.
+
+# sda3 and sda4 : 1G Root file system
+These partitions contain the root file system which has all the important
+Linux operating system executables and configuration files for the Seagate
+Central. Again, one of these partitions is active and the other is a backup. 
+
+The files in these partitions may be useful to manipulate if the operating
+system needs to be modified. However take note that modifying the files in
+the /etc configuration directory may not be effective because of the 
+backup configuration partiton (see below)
+
+# sda5 : 1G backup config partition
+This partition contains a backup of the main configuration elements of the
+Seagate Central Linux operating system. This partition is mounted at
+/usr/config/backupconfig on the Seagate Central.
+
+When the Seagate Central boots up all of the files in this partition, 
+particularly those under the /etc, are copied over the ones on the root
+partition. So this means that any changes you wish to make to files
+in the /etc configuration directory have to also be made in the corresponding
+/etc directory on this partition.
+
+# sda6 : 1G Linux swap partition
+This is the Linux swap partition which is used to extend the system's 
+memory resources to the disk when RAM is getting low. This can usually be
+ignored and must not be modified.
+
+# sda7 : 1G Update partition
+This partition is used during firmware upgrades.
+
+# sda8 : Large Linux LVM partition
+This partition contains the Data partition Volume Group. It cannot be
+mounted directly but instead the Logical Volume within it must be
+mounted.
+
+The name of the Data partition logical volume is seen at the end of
+the fdisk -l command output. In this case /dev/mapper/vg1-lv1. As per
+the Procedure for Linux section this partition uses a 64K page size
+and as such may need to be mounted using the fuse2fs tool rather than
+the standard mount command.
 
