@@ -2,14 +2,13 @@
 If you have a Seagate Central that has stopped functioning then it may 
 be necessary to manually extract the data stored on the Central's
 internal hard drive. This document discusses how to accomplish this
-using a Windows 10 based system and software from Paragon. We then discuss
-some technical reasons why recovering data from a Seagate Central hard
-drive is particularly complicated, even in a Linux environment. We then
-present some very brief instructions on how to mount the Seagate Central 
-drive under Linux.
+using a Windows 10 based system using software from Paragon and using
+a Linux system. We then discuss some deeper technical reasons why recovering
+data from a Seagate Central hard drive is particularly complicated and talk 
+about the Seagate Central drive partitioning scheme.
 
 ## TLDNR - Windows
-* Connect the Seagate Central hard drive to an external USB hard drive reader 
+* Connect the Seagate Central hard drive to a USB hard drive reader 
 * Install and run "Linux File Systems for Windows by Paragon Software" on your Windows PC.
 * Put the Paragon tool into "Read-only" mode.
 * Connect the drive reader to your Windows machine
@@ -18,7 +17,7 @@ drive under Linux.
 * Copy the required data to another device using Windows Explorer
 
 ## TLDNR - Linux
-* Connect the Seagate Central hard drive to an external hard drive reader
+* Connect the Seagate Central hard drive to a USB hard drive reader
 * Install the "lvm" and "e2fsprogs" packages on your Linux system
 * Connect the drive reader to your Linux system
 * Use the lvdisplay command to identify the Data parition LVM path
@@ -285,8 +284,8 @@ read-only by adding the "-o ro" flag to the end of the command.
     root# ls    
     admin  admin.tm  anonftp  dbd  lost+found  mt-daapd  Public  twonky  TwonkyData
 
-At this point the volume should be mounted in the /mnt/tmp directory and the
-data in the partition should be available for copying as normal. 
+At this point the volume will be mounted at the specified directory (in this case 
+/mnt/tmp) and the data in the partition should be available for copying as normal. 
 
 Once you've finished using the parititon the volume can be unmounted as per the
 normal umount command as seen in the example below
