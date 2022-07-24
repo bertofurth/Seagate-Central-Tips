@@ -49,12 +49,12 @@ the Seagate Central before you start this procedure.
 
 ## Note and Warning
 If you are not very technically literate, or you are not confident about 
-following this procedure then you can simply pay an expert to recover the data 
+following this procedure, then you can simply pay an expert to recover the data 
 from your old non working Seagate Central. Simply search for Data or Hard Drive 
 recovery services in your area. 
 
 This is something you should consider if the data you're retrieving is 
-particularly important or if you're not very confident with computers.
+particularly important and if you're not very confident with computers.
 
 That being said, as long as you follow the procedure described in this document
 it's highly unlikely that you'll make things worse! You can always give this
