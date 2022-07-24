@@ -37,10 +37,10 @@ You'll need a USB hard drive reader suitable for a 3.5 inch SATA drive
 as used inside the Seagate Central. You can buy these at most electronics
 stores or websites for around US$30. 
 
-The alternative is to install the Seagate Central hard drive inside your Windows 
-computer. This assumes that you are using a desktop computer with enough room 
-inside to house the extra hard disk. This is obviously much more tedious than 
-just using an external hard drive reader.
+The alternative is to install the Seagate Central hard drive inside the computer
+you're using for the recovery. This assumes that you are using a desktop 
+computer with enough room inside to house the extra hard disk. This is 
+obviously much more tedious than just using an external hard drive reader.
 
 ### Enough disk space to store the recovered files
 Seagate Central hard drive capacities vary from 2000GB to 5000GB depending on the 
