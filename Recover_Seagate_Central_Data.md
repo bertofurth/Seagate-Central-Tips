@@ -2,7 +2,7 @@
 If you have a Seagate Central that has stopped functioning then it may 
 be necessary to manually extract the data stored on the Central's
 internal hard drive. This document discusses how to accomplish this
-using a Windows 10 based system using software from Paragon and using
+using either a Windows 10 based system and software from Paragon or using
 a Linux system. We then discuss some deeper technical reasons why recovering
 data from a Seagate Central hard drive is particularly complicated and talk 
 about the Seagate Central drive partitioning scheme.
