@@ -63,11 +63,9 @@ you'll need root access on the Linux system as well.
 
 If you only have a Windows system and do not have a Linux system then I can
 suggest using a USB key based "Live" Linux system such as the ones supplied 
-by Debian, OpenSUSE or most other Linux distributions. This will allow you to
-temporarily boot Linux on your Windows machine without impacting the data on
-your main Windows drive. As per the warning above, be very careful when
-running the commands in this document to ensure that you are not applying
-them to your system's internal drive containing your Windows partitions!
+by Debian, OpenSUSE or most other Linux distributions. I personally suggest
+the "OpenSUSE LEAP Rescue Live CD" as it is a small image that allows you
+to easily log in as root and install the required Linux utilities.
 
 ### Required software on the building Linux host
 This procedure makes use of version 2.26 or later of the "sfdisk" hard drive
@@ -80,6 +78,11 @@ confirm the version of "sfdisk" in your system.
 
     # sfdisk -v
     sfdisk from util-linux 2.37.4
+
+If versions earlier than 2.26 are used then an error messsage similar
+to the following may appear while running the sfdisk command
+
+    unrecognized partition table type
 
 Ensure that the system has the "lvm2" and "e2fsprogs" packages installed.
 These should already be in place on the majority of modern Linux systems. Issue
@@ -113,6 +116,17 @@ necessary.
     unsquashfs version 4.5.1 (2022/03/17)
     copyright (C) 2022 Phillip Lougher <phillip@squashfs.org.uk>    
     
+You may need to manually install "unsquashfs" as this is not normally 
+included in most Linux systems.
+
+For OpenSUSE
+
+    # zypper add squashfs
+     
+For Debian
+
+    # apt-get install squashfs-tools
+     
 ## Procedure
 ### Open the Seagate Central and take out the source Hard Drive
 As per the pre-requisites section, search for a video detailing instructions
@@ -138,19 +152,37 @@ Login to your Linux system as the root user or prefix each of the commands
 listed from this point with "sudo".
 
 Before you connect the target hard drive to the Linux system run the
-"sfdisk -l" command to see a list of the drives that are currently connected
+"lsblk" command to see a list of the drives that are currently connected
 to your system. Take a note of their names. They will most likely be named
-something along the lines of /dev/sdaX or /dev/sdbX and so forth.
+something along the lines of /dev/sda or /dev/sdb and so forth.
 
+Here is an example taken from a PC running a live USB drive
 
-PUT AN EXAMPLE FROM THE LIVE SYSTEM HERE
+    # lsblk
+    NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    loop0    7:0    0 542.4M  1 loop /run/overlay/squashfs_container
+    loop1    7:1    0   3.3G  1 loop /run/overlay/rootfsbase
+    sda      8:0    0 931.5G  0 disk
+      sda1   8:1    0 132.4M  0 part
+      sda2   8:2    0 148.9G  0 part
+      sda3   8:3    0   992K  0 part
+      sda4   8:4    0     1K  0 part
+      sda5   8:5    0     2G  0 part
+      sda6   8:6    0 780.5G  0 part
+    sdb      8:16   1  14.5G  0 disk
+      sdb1   8:17   1 622.5M  0 part /run/overlay/live
+      sdb2   8:18   1    20M  0 part
+      sdb3   8:19   1  13.8G  0 part /run/overlay/overlayfs
+    sr0     11:0    1  1024M  0 rom
 
+Here is an example from a Raspberry PI 4B
 
-
-
-
-It is important to note these drive names because you must make sure that
-you do not apply any of the dangerous commands below to those existing drives.
+    # lsblk
+    NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    mmcblk0     179:0    0 119.1G  0 disk
+      mmcblk0p1 179:1    0    64M  0 part /boot/efi
+      mmcblk0p2 179:2    0   500M  0 part [SWAP]
+      mmcblk0p3 179:3    0 118.5G  0 part /
 
 Insert the hard drive you wish to install the fresh Segate Central operating
 system to in the USB hard drive reader. From this point we will call this drive
@@ -159,12 +191,50 @@ the **target** hard drive.
 The target drive can either be the original drive from your Seagate Central or a
 different hard drive.
 
+Re-run the "lsblk" command to confirm that the next drive has been recognized.
 
-Connect the hard drive reader to your Linux system. After giving your Linux system
-a few seconds to recognize the newly attached disk, use the "sfdisk -l" command
-to list the drives in the system.
+In the example below we have inserted a 4TB Seagate Central drive into a PC. Note
+that the new drive is called "sdc" and contains a number of pre-existing Seagate
+Central partitions.
 
+    # lsblk
+    NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    loop0    7:0    0 542.4M  1 loop /run/overlay/squashfs_container
+    loop1    7:1    0   3.3G  1 loop /run/overlay/rootfsbase
+    sda      8:0    0 931.5G  0 disk
+      sda1   8:1    0 132.4M  0 part
+      sda2   8:2    0 148.9G  0 part
+      sda3   8:3    0   992K  0 part
+      sda4   8:4    0     1K  0 part
+      sda5   8:5    0     2G  0 part
+      sda6   8:6    0 780.5G  0 part
+    sdb      8:16   1  14.5G  0 disk
+      sdb1   8:17   1 622.5M  0 part /run/overlay/live
+      sdb2   8:18   1    20M  0 part
+      sdb3   8:19   1  13.8G  0 part /run/overlay/overlayfs
+    sdc      8:32   0   3.6T  0 disk
+      sdc1   8:33   0    20M  0 part
+      sdc2   8:34   0    20M  0 part
+      sdc3   8:35   0     1G  0 part
+      sdc4   8:36   0     1G  0 part
+      sdc5   8:37   0     1G  0 part
+      sdc6   8:38   0     1G  0 part
+      sdc7   8:39   0     1G  0 part
+      sdc8   8:40   0   3.6T  0 part    
+    sr0     11:0    1  1024M  0 rom
 
+In the following example a "fresh" 2.5TB hard drive is added to the Raspberry Pi
+and is assigned drive name "sda"
+
+    # lsblk
+    NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    sda           8:48   0   2.5T  0 disk
+      sda1        8:49   0   2.5T  0 part  
+    mmcblk0     179:0    0 119.1G  0 disk
+      mmcblk0p1 179:1    0    64M  0 part /boot/efi
+      mmcblk0p2 179:2    0   500M  0 part [SWAP]
+      mmcblk0p3 179:3    0 118.5G  0 part /
+      
 * Create a new Seagate Central style partition table on the target hard drive
 
 Other tools such as "parted" can be also be used to create the Seagate Central
