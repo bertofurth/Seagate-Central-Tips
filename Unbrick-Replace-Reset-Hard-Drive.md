@@ -1,6 +1,7 @@
 # Unbrick, Replace or Reset Seagate Central Hard Drive
 ## Summary
-**UNFINISHED**
+
+# WARNING! UNFINISHED!!! UNTESTED!!! # 
 
 This guide covers resetting a Seagate Central hard drive back to factory 
 defaults by physically removing the drive from the Seagate Central, then
@@ -34,8 +35,8 @@ The main risk is that you may mistakenly apply the commands in these
 instructions to the wrong hard drive in your Linux system. This may result
 in losing data and/or making your system unuseable.
 
-Understand that performing this procedure in an unmodified way will completely 
-overwrite any data on the target hard drive. 
+Also understand that performing this procedure as written will overwrite
+the data on the target hard drive.
 
 ## Prerequisites
 ### Be able to open up the Seagate Central
@@ -46,27 +47,35 @@ like "Seagate Central Disassembly".
 You'll need a "jewellers" screwdriver kit for the tiny screws and potentially
 a flat head pry tool to get the face plate and lid off the unit.
 
+I note here that I have never managed to open up a Seagate Central without
+cracking a little bit of the plastic cover, so don't feel too bad if you
+do too!
+
 ### A USB connected Hard Drive Reader / Adapter
 You'll need a USB hard drive reader suitable for a 3.5 inch SATA drive
 as used inside the Seagate Central. You can buy these at most electronics
 stores or websites for around US$30. 
 
-The alternative is to install the Seagate Central hard drive inside the computer
+The alternative is to install the target hard drive inside the computer
 you're using for the recovery. This assumes that you are using a desktop 
-computer with enough room inside to house the extra hard disk. This is 
-obviously much more tedious than just using an external hard drive reader.
+computer with a spare SATA port to house the extra hard disk. This is 
+obviously much more tedious than just using an external USB connected hard
+drive reader.
 
 ### Root access on a building Linux System
 This procedure depends on being able to manipulate the target hard drive
 using a Linux based system. In addition, since the procedure involves mounting 
-an external hard drive as well as manipulating file ownership and permissions 
-you'll need root access on the Linux system as well.
+an external hard drive and manipulating file ownership you'll need root access
+on the Linux system as well.
 
 If you only have a Windows system and do not have a Linux system then I can
-suggest using a USB key based "Live" Linux system such as the ones supplied 
+suggest using a USB based "Live" Linux system such as the ones supplied 
 by Debian, OpenSUSE or most other Linux distributions. I personally suggest
-the "OpenSUSE LEAP Rescue Live CD" as it is a small image that allows you
-to easily log in as root and install the required Linux utilities.
+the "OpenSUSE LEAP Rescue CD" as it is a small image that allows you
+to easily log in as root and install the required Linux utilities. See
+
+https://en.opensuse.org/SDB:Create_a_Live_USB_stick_using_Windows
+https://download.opensuse.org/distribution/openSUSE-current/live/
 
 ### Required software tools on the building Linux host
 #### sfdisk version later than 2.26
@@ -312,7 +321,7 @@ corresponding to the target. **Warning : This is an extremely dangerous
 command!! Make sure to specify the correct target drive name or you
 might destroy data on your computer!!**
 
-    dd if=/dev/zero of=/dev/sdX status=progress bs=1048576 count=6144
+    dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
     
 This command will take a few minutes to complete executing. 
 
@@ -370,14 +379,14 @@ the Linux operating system on a Seagate Central uses a non standard 64K memory
 page size.
 
     # Partitions 1 and 2 use ext2
-    mkfs.ext2 -F -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX1
-    mkfs.ext2 -F -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX2
+    mkfs.ext2 -F -L Kernel_1 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX1
+    mkfs.ext2 -F -L Kernel_2 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX2
 
     # Partitions 3, 4, 5 and 7 use ext4
-    mkfs.ext4 -F -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX3
-    mkfs.ext4 -F -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX4
-    mkfs.ext4 -F -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX5
-    mkfs.ext4 -F -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX7
+    mkfs.ext4 -F -L Root_File_System -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX3
+    mkfs.ext4 -F -L Root_File_System -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX4
+    mkfs.ext4 -F -L Config -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX5
+    mkfs.ext4 -F -L Update -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX7
 
     # Partition 6 is a swap partition
     mkswap -p65536 /dev/sdX6
