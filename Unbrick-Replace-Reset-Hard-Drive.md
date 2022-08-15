@@ -1,8 +1,5 @@
 # Unbrick, Replace or Reset Seagate Central Hard Drive
 ## Summary
-
-# WARNING! UNFINISHED!!! UNTESTED!!! # 
-
 This guide covers resetting a Seagate Central hard drive back to factory 
 defaults by physically removing the drive from the Seagate Central, then
 using an external Linux system to get the drive back to "out of the box"
@@ -10,10 +7,10 @@ state. This procedure can be applied to the original hard drive from a
 Seagate Central or to a new hard drive.
 
 This procedure can be used where a Seagate Central unit has become 
-unresponsive or unuseable. That is, when a Seagate central has been "bricked". 
+unresponsive or unusable. That is, when a Seagate central has been "bricked". 
 
 It can also be used if you wish to replace the hard drive in a Seagate Central
-or to create a temporary hard drive seperate from your everyday/production drive
+or to create a temporary hard drive separate from your everyday/production drive
 to perform experiments with.
 
 ## TLDNR
@@ -33,7 +30,7 @@ to perform this procedure inoperative!
 
 The main risk is that you may mistakenly apply the commands in these 
 instructions to the wrong hard drive in your Linux system. This may result
-in losing data and/or making your system unuseable.
+in losing data and/or making your system unusable.
 
 Also, understand that performing this procedure as written will overwrite
 the data on the target hard drive.
@@ -92,7 +89,7 @@ confirm the version of "sfdisk" in your system.
     # sfdisk -v
     sfdisk from util-linux 2.37.4
 
-If versions earlier than 2.26 are used, then an error messsage similar
+If versions earlier than 2.26 are used, then an error message similar
 to the following may appear while running the sfdisk command
 
     unrecognized partition table type
@@ -320,6 +317,7 @@ corresponding to the target. **Warning : This is an extremely dangerous
 command!! Make sure to specify the correct target drive name or you
 might destroy data on your computer!!**
 
+    sfdisk --delete /dev/sdX
     dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
     
 This command will take a few minutes to complete executing. 
@@ -354,7 +352,7 @@ native Seagate Central. This layout allocates all the "free" space at the
 end of the drive to the Data partition. (N.B. Advanced users could modify the
 partition table by editing this file appropriately.)
 
-The partiton table can be applied to drive sdX using the commands below. Remember
+The partition table can be applied to drive sdX using the commands below. Remember
 to substitute your actual target drive name for sdX. Run partprobe after the
 command has executed to force your system to re-read the partition table.
 
@@ -365,10 +363,9 @@ Each partition on the drive must now be formatted using the commands listed
 below. Note the file system options specified with the "-O" parameter are
 designed to exactly match those used on a Seagate Central drive.
 
-Also note that the "mkswap" for partition 6 and the "mkfs.ext4" command
-for the data partition use a non standard 65536 byte page size. This is because
-the Linux operating system on a Seagate Central uses a non standard 64K memory
-page size.
+Also note that "mkswap" for partition 6 uses a non standard 65536 byte page size
+and the first page must be zeroed out first. This is because the Linux operating
+system on a Seagate Central uses a non standard 64K memory page size.
 
     # Partitions 1 and 2 use ext2
     mkfs.ext2 -F -L Kernel_1 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX1
@@ -381,6 +378,7 @@ page size.
     mkfs.ext4 -F -L Update -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX7
 
     # Partition 6 is a swap partition
+    dd bs=65536 count=2 if=/dev/zero of=/dev/sdX6 
     mkswap -p65536 /dev/sdX6
     
 At this point the target drive is properly formatted.
@@ -444,7 +442,7 @@ the required folder structures and data.
  changes the system root password to the value XXXXXXXXXX on first boot. Note
  that this is not necessary if you are already using self generated firmware 
  that already does this. We strongly suggest that you modify the XXXXXXXXXX
- password below to a different value of your chosing.
+ password below to a different value of your choosing.
  
     cat << EOF > /tmp/SC-Root_1/etc/init.d/change-root-pw.sh
     #!/bin/bash
@@ -516,8 +514,15 @@ because it takes extra time to recreate the Data partition and other configurati
 files. After waiting, try to connect to the unit via the Web Management interface.
 
 ### Connect to the Web Management Interface
-You can now log in to the Seagate Central by opening Windows Explorer, going to
-"Network Neighborhood" then double clicking on the new Seagate Central device which
+You can now login to the Seagate Central web management interface where you
+will be asked to configure an admin user. After that you will be able to
+operate the Seagate Central as normal.
+
+It may not be obvious how to log in to the Seagate Central web management
+interface if you don't have the IP address of the unit.
+
+The first method is as per the documentation. Go into Windows Explorer, go to
+"Network" then double click on the new Seagate Central device which
 should be called "Seagate-xxxxxx". You can then click on the Public Folder then
 select the "Manage Seagate Central" link. This should open your browser to the
 device management web page where you can configure the unit.
@@ -534,34 +539,32 @@ For example, if the unit's MAC Address is listed on the bottom of the unit as
 http://seagate-8ACB4F
 
 Another way of discovering the name and IP address of the unit it to run the 
-"nmblookup -S '*' " command on a Linux system connected to the same network at the
+"nmblookup -S '*' " command on a Linux system connected to the same network as the
 Seagate Central. (This requires the "samba-client" package is installed).
 
 This will print out the names and IP addresses of all devices providing SMB file
 sharing services on the local network. One of the devices will be called "SEAGATE-xxxxxx"
 and the IP address of the unit will be listed. You can then browse to that IP address
-to manage the unit. In the following example the unit called SEAGATE-8ACB4E has an
+to manage the unit. In the following example the unit called SEAGATE-8ACB4F has an
 IP address of 192.168.1.58.
 
     # nmblookup -S '*'
-    10.0.2.58 SEAGATE-8ACB4E<00>
+    192.168.1.58 SEAGATE-8ACB4F<00>
     Looking up status of 192.168.1.58
-        SEAGATE-8ACB4E  <00> -         B <ACTIVE>
-        SEAGATE-8ACB4E  <03> -         B <ACTIVE>
-        SEAGATE-8ACB4E  <20> -         B <ACTIVE>
+        SEAGATE-8ACB4F  <00> -         B <ACTIVE>
+        SEAGATE-8ACB4F  <03> -         B <ACTIVE>
+        SEAGATE-8ACB4F  <20> -         B <ACTIVE>
         WORKGROUP       <1e> - <GROUP> B <ACTIVE>
         WORKGROUP       <00> - <GROUP> B <ACTIVE>
-
-        MAC Address = 00-00-00-00-00-00
 
 
 ## Technical Notes
 Below are some technical notes that are only included for the sake of interested
-parties. 
+parties. These do not need to be followed.
 
 #### Manually create the Data partition
 As noted, the Seagate Central will automatically recreate the Data partition and the
-associated LVM volumes if it detects that it is missing. If, however, for some reason
+associated LVM volume if it detects that they are missing. If, however, for some reason
 you wish to manually create this Data partition before the unit boots up then it is not 
 difficult to modify the procedure accordingly.
 
@@ -569,7 +572,7 @@ First, the "SC_part_table.txt" file needs to be modified to include a /dev/sdX8
 partition. The file included in this project has a commented out line that can 
 be uncommented to include this new partition.
 
-Apply all the partition creation and formating instructions above but then at the end
+Apply all the partition creation and formatting instructions above but then at the end
 also create format the data partition as follows. Note that the lvm2 package will need
 to be installed on the building system.
 
@@ -587,3 +590,16 @@ can be left at the default of 4096 bytes. This means that the partition will be 
 easily readable by other Linux systems however it will be less efficient when operating
 on the Seagate Central which natively uses a 64K memory page size.
     
+#### Modifying the default partition table
+The size of the individual partitions on the Seagate Central drive can be modified
+in order to facilitate experimentation. This can be done by simply editing the
+appropriate entry in the "SC_part_table.txt" file before it is applied.
+
+For example the sdX3 and sdX4 root file system partitions might be increased in size from
+1GiB to 2GiB. This might allow extra cross compiled binaries to be installed on the unit.
+
+As another example, partitions sdX5 (Config) and sdX7 (Update) rarely use more
+than about 200MiB so it would be safe to reduce these from 1GiB each to, say, 0.5GiB.
+
+The only restriction is that the order of the partitions must not be modified.
+
