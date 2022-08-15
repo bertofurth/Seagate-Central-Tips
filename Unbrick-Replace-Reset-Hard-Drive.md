@@ -508,11 +508,8 @@ just in case there's a problem and the hard drive needs to be removed again.
 Reconnect the Ethernet cabling and the power cable and power on the unit.
 
 The LED status light on the unit should blink green for a few minutes and then
-go solid to indicate the Linux kernel has loaded properly.
-
-It can take about 3 more minutes for the unit to boot up properly on first boot
-because it takes extra time to recreate the Data partition and other configuration
-files. After waiting, try to connect to the unit via the Web Management interface.
+go solid to indicate the Linux kernel has loaded properly. It may take about 3
+more minutes after this for the system to completely initialize.
 
 ### Connect to the Web Management Interface
 You can now login to the Seagate Central web management interface where you
@@ -522,8 +519,8 @@ operate the Seagate Central as normal.
 It may not be obvious how to log in to the Seagate Central web management
 interface if you don't have the IP address of the unit.
 
-The first method is as per the documentation. Go into Windows Explorer, go to
-"Network" then double click on the new Seagate Central device which
+The first method is as per the Seagate Central User Guide. Go into Windows
+Explorer, go to "Network" then double click on the new Seagate Central device which
 should be called "Seagate-xxxxxx". You can then click on the Public Folder then
 select the "Manage Seagate Central" link. This should open your browser to the
 device management web page where you can configure the unit.
@@ -531,11 +528,12 @@ device management web page where you can configure the unit.
 If you are unable to access this URL for any reason then you should be able to
 view the management web page of the newly booted Seagate Central by putting the
 default name of the unit into the URL address bar of your browser. The default
-name of the unit is "Seagate-xxxxxx" where "xxxxxx" is the last 6 digits of the
-unit's MAC address which can be seen on the bottom of the unit.
+name of the unit is "Seagate-xxxxxx" where "xxxxxx" is the last 6 characters of the
+unit's MAC address which should be printed on the bottom of the unit's plastic 
+cover.
 
-For example, if the unit's MAC Address is listed on the bottom of the unit as
-"0010758ACB4F" then you would browse to
+For example, if the Seagate Central's MAC Address is shown on the bottom of the
+unit as "0010758ACB4F" then you would browse to
 
 http://seagate-8ACB4F
 
@@ -547,7 +545,7 @@ This will print out the names and IP addresses of all devices providing SMB file
 sharing services on the local network. One of the devices will be called "SEAGATE-xxxxxx"
 and the IP address of the unit will be listed. You can then browse to that IP address
 to manage the unit. In the following example the unit called SEAGATE-8ACB4F has an
-IP address of 192.168.1.58.
+IP address of 192.168.1.58, so you would browse to http://192.168.1.58
 
     # nmblookup -S '*'
     192.168.1.58 SEAGATE-8ACB4F<00>
