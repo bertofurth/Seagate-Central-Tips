@@ -68,7 +68,8 @@ by Debian, OpenSUSE or most other Linux distributions. I personally suggest
 the "OpenSUSE LEAP Rescue Live CD" as it is a small image that allows you
 to easily log in as root and install the required Linux utilities.
 
-### Required software on the building Linux host
+### Required software tools on the building Linux host
+#### sfdisk version later than 2.26
 This procedure makes use of version 2.26 or later of the "sfdisk" hard drive
 partitioning tool. This tool should be available on any modern Linux system 
 with software more recent than 2015 or so. Earlier versions cannot
@@ -80,16 +81,15 @@ confirm the version of "sfdisk" in your system.
     # sfdisk -v
     sfdisk from util-linux 2.37.4
 
-If versions earlier than 2.26 are used then an error messsage similar
+If versions earlier than 2.26 are used, then an error messsage similar
 to the following may appear while running the sfdisk command
 
     unrecognized partition table type
 
+#### Logical Volume Manager (lvm2) and e2fsprogs
 Ensure that the system has the "lvm2" and "e2fsprogs" packages installed.
-These should already be in place on the majority of modern Linux systems. Issue
-the "lvm version", "mkfs.ext2 -V" and "mkfs.ext4 -V" commands to confirm that
-these packages are intstalled on your Linux system. No particular version 
-of these tools is necessary.
+Issue the "lvm version", "mkfs.ext2 -V" and "mkfs.ext4 -V" commands to confirm 
+that these packages are present on your building Linux system. 
 
     # lvm version
       LVM version:     2.03.16(2)-git (2022-02-07)
@@ -104,32 +104,39 @@ of these tools is necessary.
     mke2fs 1.46.5 (30-Dec-2021)
     Using EXT2FS Library version 1.46.5
     
-Finally, ensure that "unzip" and "unsquashfs" (part of the "squashfs" /
-"squashfs-tools" packages) are installed in order to read the Seagate
-Central firmware image. No particular version of these tools is 
-necessary.
+#### squashfs tools (unsquashfs)    
+Ensure that the "unsquashfs" program (part of the "squashfs" /
+"squashfs-tools" package) is installed in order to read the Seagate
+Central firmware image. 
+
+    # unsquashfs -v
+    unsquashfs version 4.5.1 (2022/03/17)
+    copyright (C) 2022 Phillip Lougher <phillip@squashfs.org.uk>    
+    . . .
+
+#### unzip 
+Most systems will come with the "unzip" tool included but some may
+require it to be manually installed.
 
     # unzip -v
     UnZip 6.00 of 20 April 2009, by Info-ZIP.  Maintained by C. Spieler.  Send
     bug reports using http://www.info-zip.org/zip-bug.html; see README for details.
     . . .
-    # unsquashfs -v
-    unsquashfs version 4.5.1 (2022/03/17)
-    copyright (C) 2022 Phillip Lougher <phillip@squashfs.org.uk>    
-    
-You may need to manually install "unsquashfs" and "lvm2" as these are not always
-included in most Linux systems.
+
+#### Examples of how to install new packages
+You may need to manually install "unzip", "unsquashfs" and "lvm2" as these are 
+not always included in many Linux systems.
 
 For OpenSUSE
 
-    # zypper add squashfs lvm2
+    # zypper add unzip squashfs lvm2
      
-For Debian
+For Debian / Ubuntu
 
-    # apt-get install squashfs-tools lvm2
+    # apt-get install unzip squashfs-tools lvm2
      
 ## Procedure
-### Open the Seagate Central and take out the source Hard Drive
+### Open the Seagate Central and take out the original Hard Drive
 As per the pre-requisites section, search for a video detailing instructions
 on opening the Seagate Central and how to pull out the hard drive.
 There are dozens of videos on the topic. One example is
@@ -141,23 +148,73 @@ drive in place are unscrewed, the hard drive can be pulled away and
 disconnected from the main circuit board with a moderate amount of force.
 
 ### Optional - Recover any important user Data from the source hard drive
-If you have not already backed up the user Data contained on the Seagate Central
-drive then this is the point at which it should be done.
+If you have not already backed up the user Data contained on the original
+Seagate Central drive then this is the point at which it should be done.
 
 See the document in this project called **Recover_Seagate_Central_Data.md**
 for detailed instructions on how to retrieve Data from a physical hard drive
 that has been removed from a Seagate Central.
 
-### Attach the target hard drive to an external Linux System
+### Workspace preparation
+If not already done, download the files in this project to a new directory 
+on your Linux build machine. 
+
+For example, the following **git** command will download the 
+files in this project to a new subdirectory called 
+Seagate-Central-Samba
+
+    git clone https://github.com/bertofurth/Seagate-Central-Samba.git
+    
+Alternately, the following **wget** and **unzip** commands will 
+download the files in this project to a new subdirectory called
+Seagate-Central-Samba-main
+
+    wget https://github.com/bertofurth/Seagate-Central-Tips/archive/refs/heads/main.zip
+    unzip main.zip
+
+Change into this new subdirectory. This will be referred to as 
+the base working directory going forward.
+
+     cd Seagate-Central-Tips
+     
+### Obtain Seagate Central firmware
+As of the writing of this document a Seagate Central firmware zip
+file can be downloaded from the Seagate website by going to the
+following URL and entering your Seagate Central's serial number.
+
+https://www.seagate.com/us/en/support/external-hard-drives/network-storage/seagate-central/#downloads
+
+The serial number can be found on the bottom of your Seagate
+Central's case, via the web management interface on the
+"Settings -> Setup -> About" page, or via the ssh command line by
+issuing the "serialno.sh" command.
+
+The serial number should be in a format similar to "NA6SXXXX".
+
+The latest firmware zip file available as of the writing of this 
+document is Seagate-HS-update-201509160008F.zip
+
+Copy this file to the base working directory on the build host. 
+
+If Seagate ever stop supplying firmware downloads then it is possible
+to obtain Seagate Central firmware by using content on partitions 5
+and/or 7 of a Seagate Central hard drive. 
+
+Also note, that it is possible to use a firmware image as generated by the
+Seagate-Central-Samba project at
+
+https://github.com/bertofurth/Seagate-Central-Samba/blob/main/README_FIRMWARE_UPGRADE_METHOD.md
+
+### Attach the target hard drive to the building Linux System
 Login to your Linux system as the root user or prefix each of the commands
 listed from this point with "sudo".
 
-Before you connect the target hard drive to the Linux system run the
+Before you connect the target hard drive to the Linux system, run the
 "lsblk" command to see a list of the drives that are currently connected
 to your system. Take a note of their names. They will most likely be named
 something along the lines of /dev/sda or /dev/sdb and so forth.
 
-Here is an example taken from a PC running a live USB drive
+Here is an example taken from a PC running a live USB Linux distribution
 
     # lsblk
     NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
@@ -186,13 +243,14 @@ Here is an example from a Raspberry PI 4B
       mmcblk0p3 179:3    0 118.5G  0 part /
 
 Insert the hard drive you wish to install the fresh Segate Central operating
-system to in the USB hard drive reader. From this point we will call this drive
-the **target** hard drive.
+system to in the USB hard drive reader and attach it to the building system. 
+From this point we will call this drive the **target** hard drive.
 
-The target drive can either be the original drive from your Seagate Central or a
-different hard drive.
+The target drive can either be the original drive from your Seagate Central that
+you wish to reset, or a different hard drive.
 
-Re-run the "lsblk" command to confirm that the next drive has been recognized.
+After about 20 seconds re-run the "lsblk" command to confirm that the target
+drive has been recognized.
 
 In the example below we have inserted a 4TB Seagate Central drive into a PC. Note
 that the new drive is called "sdc" and contains a number of pre-existing Seagate
@@ -236,36 +294,42 @@ and is assigned drive name "sda"
       mmcblk0p2 179:2    0   500M  0 part [SWAP]
       mmcblk0p3 179:3    0 118.5G  0 part /
      
-In the commands shown from this point the hard drive we wish to prepare
-will be called **sdX**. You will need to modify the commands to match
-the appriate drive letter in your system.
+In the commands shown from this point, the target hard drive we wish to prepare
+will be called **sdX**. You will need to modify the commands to use the actual
+drive name of the target hard drive in your system (probably "sdb" or "sdc").
 
-### Wipe the existing partition table on the target hard drive
+### Wipe the existing partition table and data on the target hard drive
 This step is not normally required when partitioning and formatting a
-drive however while developing this procedure we found a number of obscure
-problems occured unless this step was followed. This was particularly the
-case when a drive from a Seagate Central was the target as opposed to
+drive however while developing this procedure we found that pre-erasing
+the drive helped to avoid a number of obscure problems. This was particularly
+the case when a drive from a Seagate Central was the target as opposed to
 a new drive being the target.
 
 The first 6 GB of the drive should be overwritten with zeros to completely
-clear any operating system data and partitioning. The easiest way to do
-that is with the following "dd" command as per the example below. Remember 
-to replace sdX with the drive name corresponding to the target. **Warning : 
-This is an extremely dangerous command. Make sure to specify the correct
-/dev/sdX target drive name or you might destroy data on your computer.**
+clear any operating system data and partitioning. This is done using the "dd"
+command as seen below. Remember to replace "sdX" with the actual drive name 
+corresponding to the target. **Warning : This is an extremely dangerous 
+command!! Make sure to specify the correct target drive name or you
+might destroy data on your computer!!**
 
-    # dd if=/dev/zero of=/dev/sdX status=progress bs=1048576 count=6144
+    dd if=/dev/zero of=/dev/sdX status=progress bs=1048576 count=6144
     
-After executing this command, physically disconnect the USB hard drive reader
-from the building system, reboot the system, then once the system has rebooted
-reconnect the hard drive reader again. This step may appear unintuitive or 
-sloppy however, in the process of developing this procedure a reboot at this
-point fixed a number of obscure problems.
+This command will take a few minutes to complete executing. 
 
-After the system reboots and the hard drive has been reconnected run the
-"lsblk" command again to re-identify the target hard drive. The target
-hard drive should now have no partitions (eg sdX1, sdX2, etc). Also note
-that the name of the drive may well change after a system reboot.
+After the dd command has completed, physically disconnect the USB hard drive
+reader from the building system and then reboot the building system. 
+
+Once the system has rebooted reconnect the hard drive reader again. 
+
+Note that while this "rebooting" step may appear unintuitive or sloppy to an
+experienced Linux user, in the process of developing this procedure a reboot
+at this point fixed a number of obscure problems.
+
+After the system reboots run the "lsblk" command again, then reconnect the
+target hard drive and then run the "lsblk" command yet again to re-identify 
+the target hard drive. The target hard drive should now have no partitions 
+(i.e. sdX1, sdX2, etc). Also note that the name of the drive **may change**
+after a system reboot.
 
 In the example below we see that the 2.5TB target drive "sda" now has no 
 partitions.
@@ -285,65 +349,25 @@ partitions.
 
 A template file in this project called "SC_part_table.txt" can be used
 by the sfdisk tool to create the same partition layout on a hard drive as a 
-native Seagate Central hard drive. 
+native Seagate Central. This layout allocates all the "free" space at the
+end of the drive to the Data partition. (N.B. Advanced users could modify the
+partition table by editing this file appropriately.)
 
 The partiton table can be applied to drive sdX using the commands below. Remember
 to substitute your actual target drive name for sdX. Run partprobe after the
 command has executed to force your system to re-read the partition table.
 
-    # cat SC_part_table.txt | sfdisk --force /dev/sdX
-    # partprobe
+    cat SC_part_table.txt | sfdisk --force /dev/sdX
+    partprobe
     
-Here is an example of the command output of the sfdisk command. 
-    
-    # cat SC_part_table.txt | sfdisk --force /dev/sdX
-    Checking that no-one is using this disk right now ... OK
-
-    Disk /dev/sdX: 149.05 GiB, 160041885696 bytes, 312581808 sectors
-    Disk model: 00AVJS-63WNA0
-    Units: sectors of 1 * 512 = 512 bytes
-    Sector size (logical/physical): 512 bytes / 512 bytes
-    I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
-
-    >>> Script header accepted.
-    >>> Script header accepted.
-    >>> Script header accepted.
-    >>> Script header accepted.
-    >>> Created a new GPT disklabel (GUID: F5526D62-EA0C-154D-8E51-DD308EA1B2D3).
-    /dev/sdX1: Created a new partition 1 of type 'Microsoft basic data' and of size 20 MiB.
-    /dev/sdX2: Created a new partition 2 of type 'Microsoft basic data' and of size 20 MiB.
-    /dev/sdX3: Created a new partition 3 of type 'Microsoft basic data' and of size 1 GiB.
-    /dev/sdX4: Created a new partition 4 of type 'Microsoft basic data' and of size 1 GiB.
-    /dev/sdX5: Created a new partition 5 of type 'Microsoft basic data' and of size 1 GiB.
-    /dev/sdX6: Created a new partition 6 of type 'Linux swap' and of size 1 GiB.
-    /dev/sdX7: Created a new partition 7 of type 'Microsoft basic data' and of size 1 GiB.
-    /dev/sdX8: Created a new partition 8 of type 'Linux LVM' and of size 144 GiB.
-    /dev/sdX9: Done.
-    
-    New situation:
-    Disklabel type: gpt
-    Disk identifier: F5526D62-EA0C-154D-8E51-DD308EA1B2D3
-    
-    Device        Start       End   Sectors  Size Type
-    /dev/sdX1      2048     43007     40960   20M Microsoft basic data
-    /dev/sdX2     43008     83967     40960   20M Microsoft basic data
-    /dev/sdX3     83968   2181119   2097152    1G Microsoft basic data
-    /dev/sdX4   2181120   4278271   2097152    1G Microsoft basic data
-    /dev/sdX5   4278272   6375423   2097152    1G Microsoft basic data
-    /dev/sdX6   6375424   8472575   2097152    1G Linux swap
-    /dev/sdX7   8472576  10569727   2097152    1G Microsoft basic data
-    /dev/sdX8  10569728 312581774 302012047  144G Linux LVM
-
-    The partition table has been altered.
-    Calling ioctl() to re-read partition table.
-    Syncing disks.
-        
 Each partition on the drive must now be formatted using the commands listed
 below. Note the file system options specified with the "-O" parameter are
 designed to exactly match those used on a Seagate Central drive.
-Also note that the "mkswap" and the last "mkfs.ext4" command use
-a non standard 65536 byte page size because the Linux operating system on 
-a Seagate Central uses a non standard 64K memory page size.
+
+Also note that the "mkswap" for partition 6 and the "mkfs.ext4" command
+for the data partition use a non standard 65536 byte page size. This is because
+the Linux operating system on a Seagate Central uses a non standard 64K memory
+page size.
 
     # Partitions 1 and 2 use ext2
     mkfs.ext2 -F -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX1
@@ -367,98 +391,116 @@ a Seagate Central uses a non standard 64K memory page size.
     lvscan    
     mkfs.ext4 -F -b 65536 -L Data -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize -m0 /dev/vg1/lv1
 
+At this point the target drive is formatted and ready to accept data.
 
+### Install Seagate Central firmware on the target hard drive
+In this part of the procedure we populate the target drive partitions with
+the required Linux Operating System programs and data as taken from a
+Seagate Central Firmware zip file.
 
-* Install Seagate Central firmware on the target hard drive
+Each partition on the target drive must first be mounted on the building 
+system. Here, we create some temporary mount points under the /tmp directory
+to mount these partitions.
 
+    mkdir /tmp/SC-Kernel_1 /tmp/SC-Kernel_2 /tmp/SC-Root_1 /tmp/SC-Root_2 /tmp/SC-Config /tmp/SC-Update
 
+Next we mount the partitions 
 
-unzip Seagate-HS-update-201509160008F.zip
-mount /dev/sdb7 /mnt/sdb7
-mkdir /mnt/sdb7/local
+    mount /dev/sdX1 /tmp/SC-Kernel_1
+    mount /dev/sdX2 /tmp/SC-Kernel_2
+    mount /dev/sdX3 /tmp/SC-Root_1
+    mount /dev/sdX4 /tmp/SC-Root_2
+    mount /dev/sdX5 /tmp/SC-Config
+    mount /dev/sdX7 /tmp/SC-Update
+    
+Using the commands below we unzip the Seagate Central Firmware zip file to generate
+a corresponding ".img" file. Substitute the name of the Seagate Central firmware
+archive you are using when issuing these commands.
 
+    unzip Seagate-HS-update-201509160008F.zip
 
-mount /dev/sdb5 /mnt/sdb5
-mkdir /mnt/sdb5/firmware
-cp Seagate-HS-update-201509160008F.img /mnt/sdb5/firmware/
+The following commands are used to prepare the partitions on the target drive with
+the required folder structures and data.
 
+    # Placing the firmware images on the Seagate Central
+    mkdir /tmp/SC-Config/firmware
+    cp Seagate-HS-update-201509160008F.img /tmp/SC-Config/firmware/
 
-tar -C /mnt/sdb7/local/ -zxpf /mnt/sdb5/firmware/Seagate-HS-update-201509160008F.img
+    mkdir /tmp/SC-Update/local
+    tar -C /tmp/SC-Update/local/ -zxpf /tmp/SC-Config/firmware/Seagate-HS-update-201509160008F.img
+    
+    # The Primary Kernel
+    cp /tmp/SC-Update/local/uImage /tmp/SC-Kernel_1/
 
+    # The Secondary Kernel
+    cp /tmp/SC-Update/local/uImage /tmp/SC-Kernel_2/
+    
+    # The Primary Root File System
+    unsquashfs -f -d /tmp/SC-Root_1/ /tmp/SC-Update/local/rfs.squashfs
+    mkdir /tmp/SC-Root_1/shares
+    chmod a+x /tmp/SC-Root_1/shares
+    touch /tmp/SC-Root_1/etc/nas_shares.conf
+    chmod 600 /tmp/SC-Root_1/etc/nas_shares.conf
 
-# For primary kernel
-mount /dev/sdb3 /mnt/sdb3
-unsquashfs -f -d /mnt/sdb3/ /mnt/sdb7/local/rfs.squashfs
+    # The Secondary Root File System
+    unsquashfs -f -d /tmp/SC-Root_2/ /tmp/SC-Update/local/rfs.squashfs
+    mkdir /tmp/SC-Root_2/shares
+    chmod a+x /tmp/SC-Root_2/shares
+    touch /tmp/SC-Root_2/etc/nas_shares.conf
+    chmod 600 /tmp/SC-Root_2/etc/nas_shares.conf
+    
+ The following set of optional commands will modify the firmware so that it
+ changes the system root password to the value XXXXXXXXXX on first boot. Note
+ that this is not necessar if you are already using self generated firmware 
+ that already does this. We strongly suggest that you modify the XXXXXXXXXX
+ password below to a different value of your chosing.
+ 
+    cat << EOF > /tmp/SC-Root_1/etc/rcS.d/S90change-root-pw.sh
+    #!/bin/bash
+    
+    echo "CHANGING ROOT PASSWORD"
+    echo "root:XXXXXXXXXX" | chpasswd
+    pwconv
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow
 
+    EOF
+    
+    chmod 700 /tmp/SC-Root_1/etc/rcS.d/S90change-root-pw.sh
 
-# INSERT ROOT PW SETTING STARTUP SCRIPT
-# FIX THIS
+    cat << EOF > /tmp/SC-Root_1/etc/rcS.d/S91disable-change-root-pw.sh
+    #!/bin/bash
+    
+    chmod a-x /etc/rcS.d/S90change-root-pw.sh
+    
+    EOF
+    
+    chmod u+x /tmp/SC-Root_1/etc/rcS.d/S91disable-change-root-pw.sh
 
-cat << EOF > /mnt/sdb3/etc/rcS.d/S96change-root-pw.sh
-#!/bin/bash
+    cp /tmp/SC-Root_1/etc/rcS.d/S90change-root-pw.sh /tmp/SC-Root_2/etc/rcS.d/
+    cp /tmp/SC-Root_1/etc/rcS.d/S91disable-change-root-pw.sh /tmp/SC-Root_2/etc/rcS.d/
 
-echo "CHANGING ROOT PASSWORD"
-echo "root:seagate123" | chpasswd
-pwconv
-cp /etc/passwd /usr/config/backupconfig/etc/passwd
-cp /etc/shadow /usr/config/backupconfig/etc/shadow
+Once the required data has been placed on the target drive, unmount the partitions.
 
-EOF
-chmod u+x /mnt/sdb3/etc/rcS.d/S96change-root-pw.sh
+    umount /tmp/SC-Kernel_1
+    umount /tmp/SC-Kernel_2
+    umount /tmp/SC-Root_1
+    umount /tmp/SC-Root_2
+    umount /tmp/SC-Config
+    umount /tmp/SC-Update
+    
+After this point it should be safe to disconnect the hard drive reader from the
+building system and remove the target hard drive from the reader.
 
-cat << EOF > /mnt/sdb3/etc/rcS.d/S97disable-change-root-pw.sh
-#!/bin/bash
-
-chmod a-x /etc/rcS.d/S96change-root-pw.sh
-
-EOF
-chmod u+x /mnt/sdb3/etc/rcS.d/S97disable-change-root-pw.sh
-
-mkdir /mnt/sdb3/shares
-chmod a+x /mnt/sdb3/shares
-touch /mnt/sdb3/etc/nas_shares.conf
-chmod 600 /mnt/sdb3/etc/nas_shares.conf
-
-mount /dev/sdb1 /mnt/sdb1
-cp /mnt/sdb7/local/uImage /mnt/sdb1/
-
-
-# For backup kernel
-
-mount /dev/sdb4 /mnt/sdb4
-unsquashfs -f -d /mnt/sdb4/ /mnt/sdb7/local/rfs.squashfs
-
-cp /mnt/sdb3/etc/nas_shares.conf /mnt/sdb4/etc/
-
-
-#
-# Only do these if you want the backup kernel to reset
-# the root password if it ever boots up. Might not be a
-# bad idea since the backup kernel will only boot up
-# in the case of a complete failure of the main kernel
-# or if the unit fails to boot properly 4 times in a row.
-#
-cp /mnt/sdb3/etc/rcS.d/S96change-root-pw.sh /mnt/sdb4/etc/rcS.d/
-cp /mnt/sdb3/etc/rcS.d/S97disable-change-root-pw.sh /mnt/sdb4/etc/rcS.d/
-
-mkdir /mnt/sdb4/shares
-chmod a+x /mnt/sdb4/shares
-
-mount /dev/sdb2 /mnt/sdb2
-cp /mnt/sdb7/local/uImage /mnt/sdb2/
-
-
-umount /mnt/sdb1
-umount /mnt/sdb2
-umount /mnt/sdb3
-umount /mnt/sdb4
-umount /mnt/sdb5
-umount /mnt/sdb7
-
-
-
+Note that we do not put any data onto the Data partition. The Seagate
+Central will automatically populate this partition with the required
+directory structure on first boot. Note however that on a "fresh out of the
+box" Seagate Central a number of folders under the Public folder called
+"Music", "Photos" and "Videos" are included containing about half a Gigabyte of
+sample media files. These are not created using this procedure.
 
 * Reinsert the target hard drive back in the Seagate Central
 ### 
 ### Remove the 
 
+Note that 
