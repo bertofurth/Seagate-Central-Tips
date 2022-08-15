@@ -1,0 +1,18 @@
+# sfdisk partition table for Seagate Central HD.
+# Apply using the command
+#
+# cat SC_part_table.txt | sfdisk --force /dev/sdX
+
+label: gpt
+unit: sectors
+first-lba: 34
+sector-size: 512
+
+/dev/sdb1 : start=        2048, size=       20MiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Kernel_1"
+/dev/sdb2 : size=       20MiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Kernel_2"
+/dev/sdb3 : size=        1GiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Root_File_System_1"
+/dev/sdb4 : size=        1GiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Root_File_System_2"
+/dev/sdb5 : size=        1GiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Config"
+/dev/sdb6 : size=        1GiB, type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F, name="Swap"
+/dev/sdb7 : size=        1GiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Update"
+#/dev/sdb8 : type=E6D6D379-F507-44C2-A23C-238F2A3DF928, name="Data"
