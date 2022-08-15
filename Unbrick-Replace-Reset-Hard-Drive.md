@@ -74,6 +74,7 @@ the "OpenSUSE LEAP Rescue CD" as it is a small image that allows you
 to easily log in as root and install the required Linux utilities. See
 
 https://en.opensuse.org/SDB:Create_a_Live_USB_stick_using_Windows
+
 https://download.opensuse.org/distribution/openSUSE-current/live/
 
 ### Required software tools on the building Linux host
