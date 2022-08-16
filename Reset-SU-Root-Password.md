@@ -159,41 +159,40 @@ in as an administrator level user, but a normal user.
     NAS-X:~$ groups
     users fred
     
-Once you have confirmed that you are logged in with administrative privelidges,
-issue the following commands. These commands plant a startup script in the system
-that will change the root password to XXXXXXXXXX . Note that when you type or paste
-in these commands to your ssh session, you should replace the XXXXXXXXXX with a
-different password of your chosing.
+Once you have confirmed that you are logged in to the Seagate Central with 
+administrative privelidges, issue the following commands in your ssh
+session. These commands plant a startup script in the Seagate Central operating
+system that will change the root password to XXXXX at next boot (we'll change this
+password later). I'd suggest just copying and pasting these commands a few lines at 
+a time in to your ssh session to ensure that no mistakes are made.
 
     cat << EOF > /etc/rcS.d/S90change-root-pw.sh
     #!/bin/bash
-    
     echo "CHANGING ROOT PASSWORD"
-    echo "root:XXXXXXXXXX" | chpasswd
+    echo "root:XXXXX" | chpasswd
     pwconv
     cp /etc/passwd /usr/config/backupconfig/etc/passwd
-    cp /etc/shadow /usr/config/backupconfig/etc/shadow
-    
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow   
     EOF
     
     chmod 770 /etc/rcS.d/S90change-root-pw.sh
 
 Once these commands have been executed, login to the Seagate Central Web Management
-page and reboot the unit (Settings -> System -> Restart). You can of course just
-reboot the unit by power cycling it, but it's always better to reboot a system
+page and reboot the unit (Settings -> Setup -> System -> Restart). You can of course
+just reboot the unit by power cycling it, but it's always better to reboot a system
 gracefully.
 
 As the unit reboots your ssh session should be disconnected.
 
 ### Log in as root
-After the unit has rebooted, try to re-establish the ssh session again.
+After a few minutes when the unit has rebooted, try to re-establish the ssh session
+with the same username and password as before.
 
 Once the ssh session is established issue the "su" command to try to
-gain root access to the unit. The password should be XXXXXXXXXX or whatever
-that value was changed to in the commands above. For example
+gain root access to the unit. The password should be XXXXX. For example
 
     NAS-X:~$ su
-    Password: XXXXXXXXXX
+    Password: XXXXX
     NAS-X:/Data/admin# 
 
 The "#" prompt indicates that you are now logged in as the root user.
@@ -205,8 +204,8 @@ The procedure is as follows. Issue the "passwd" command to enter a new password.
 You will be prompted to enter the new password twice as per the following example.
 
     NAS-X:/Data/admin# passwd
-    Enter new UNIX password: ABCD1234
-    Retype new UNIX password: ABCD1234
+    Enter new UNIX password: mypassword1234
+    Retype new UNIX password: mypassword1234
     passwd: password updated successfully
 
 After changing the root password with the "passwd" command you must enter the 
@@ -220,7 +219,9 @@ the root password on the Seagate Central again.
 
 ### Disable the boot script
 Now that you have su / root access to the unit we must disable the bootup script
-that changes the root password at each system boot.
+that changes the root password at each system boot. If we fail to perform this
+step then the next time the system reboots the root password will be reset
+back to XXXXX.
 
 This can be done with the following command
 
@@ -229,11 +230,18 @@ This can be done with the following command
 You now have su / root access on your Seagate Central!
 
 ## Removing the Hard Drive and Connecting it to Another Computer 
+This method is essentially the same concept as the method presented above except
+we will be inserting the bootup script manually
+
+
+GIVE DETAILS ON CHANGING THE PASSWORD FOR AN ADMIN USER AS WELL??
+
 
 Give a list of the tools needed and then the files that need to be edited. 
 (Copy from Data recovery Tip)
 
-Detail Windows Method with Paragon Software
+Detail Windows Method with Paragon Software - WILL NOTEPAD WORK???
+
 
 Detail Linux Method using "mount"
 
