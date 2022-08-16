@@ -7,10 +7,11 @@ state. This procedure can be applied to the original hard drive from a
 Seagate Central or to a new hard drive.
 
 This procedure can be used where a Seagate Central unit has become 
-unresponsive or unusable. That is, when a Seagate central has been "bricked". 
+unresponsive or unusable and the existing drive needs to be reset. That 
+is, when a Seagate central has been "bricked". 
 
-It can also be used if you wish to replace the hard drive in a Seagate Central
-or to create a temporary hard drive separate from your everyday/production drive
+It can also be used to replace the hard drive in a Seagate Central or to 
+create a temporary hard drive separate from your everyday/production drive
 to perform experiments with.
 
 ## TLDNR
@@ -58,7 +59,7 @@ style device.
 The alternative is to install the target hard drive inside the computer
 you're using for the recovery. This assumes that you are using a desktop 
 computer with a spare SATA port to house the extra hard disk. This is 
-obviously much more tedious than just using an external USB connected hard
+obviously less convinient than using an external USB connected hard
 drive reader.
 
 ### Root access on a building Linux System
@@ -70,7 +71,8 @@ on the Linux system as well.
 If you only have a Windows system and do not have a Linux system then I can
 suggest using a USB based "Live" Linux system such as the ones supplied 
 by Debian, OpenSUSE or most other Linux distributions. I personally suggest
-the "OpenSUSE LEAP Rescue CD" as it is a small image that allows you
+either the "OpenSUSE Leap KDE Live" for GUI Linux or the "OpenSUSE LEAP 
+Rescue CD" for console only Linux. Both are fairly small images that allow you
 to easily log in as root and install the required Linux utilities. See
 
 https://en.opensuse.org/SDB:Create_a_Live_USB_stick_using_Windows
@@ -348,8 +350,22 @@ partitions.
       mmcblk0p2 179:2    0   500M  0 part [SWAP]
       mmcblk0p3 179:3    0 118.5G  0 part /
 
+If you are using a hard drive from a Seagate Central then it is advised that
+you "zero out" the first 6GiB of the drive. During the devlopment of this
+procedure we found that a number of obscure issues can be overcome when
+re-partitioning a drive from a Segate central by zeroing out the first 6GiB.
+
+This can be done using the "dd" command as seen below. Remember to replace
+"sdX" with the actual drive name corresponding to the target. **Warning : 
+This is an extremely dangerous command!! Make sure to specify the correct
+target drive name or you might destroy data on your computer!!**
+
+    dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
+        
+This command will take a few minutes to complete executing. 
+
 ### Create a new Seagate Central style partition table on the target hard drive
-In this section we use the "sfdisk" tool (version later than 2.26) to
+In this section we use the "sfdisk" tool (v2.26 or later) to
 configure the partitions on the Seagate Central and then we format the
 partitions. 
 
@@ -390,13 +406,15 @@ Also note that "mkswap" for partition 6 uses a non standard 65536 byte page size
 and the first page must be zeroed out first. This is because the Linux operating
 system on a Seagate Central uses a non standard 64K memory page size.
 
-    # Partitions 1 and 2 use ext2
+    # Format the Kernel Partitions 1 and 2 using ext2
     mkfs.ext2 -F -L Kernel_1 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX1
     mkfs.ext2 -F -L Kernel_2 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX2
 
-    # Partitions 3, 4, 5 and 7 use ext4
+    # Format the Root Partitions 3 and 4 using ext4
     mkfs.ext4 -F -L Root_File_System -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX3
-    mkfs.ext4 -F -L Root_File_System -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX4
+    mkfs.ext4 -F -L Root_File_System -O  none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX4
+
+    # Format the Config and Update Partititons 5 and 7 using ext4
     mkfs.ext4 -F -L Config -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX5
     mkfs.ext4 -F -L Update -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX7
 
@@ -577,15 +595,38 @@ IP address of 192.168.1.58, so you would browse to http://192.168.1.58
 Below are some technical notes that are only included for the sake of interested
 parties. These do not need to be followed.
 
+#### Save the "Config" and "Data" partitions
+An alternative to wiping all the user and configuration Data on the Seagate
+Central Drive is to just try to replace the operating system components.
+This could be done in an initial attempt. If it fails then you could move
+one to wiping the whole drive.
+
+This can be done by following the procedure above with the following 
+modifications.
+
+Skip the section entitled "Wipe the existing partition table and data on the
+target hard drive". We don't want to remove the existing partitioning table.
+
+In the section entitled "Create a new Seagate Central style partition table on 
+the target hard drive" only format The Kernel partititons (1 and 2) and the 
+Root Partititons (3 and 4). Do not format the Config, Update or Swap partititons
+(5, 7 and 6).
+
+All of the rest of the procedure can be followed as written. Note that some of
+the commands involving partitions 5 and 7 might complain that some directories
+or files already exist. These errors can be ignored.
+
 #### Manually create the Data partition
 As noted, the Seagate Central will automatically recreate the Data partition and the
-associated LVM volume if it detects that they are missing. If, however, for some reason
-you wish to manually create this Data partition before the unit boots up then it is not 
-difficult to modify the procedure accordingly.
+associated LVM volume if it detects that they are missing. For this reason it is
+not necessary to manually recreate the Data partition.
+
+If, however, for some reason you did wish to manually recreate the Data partition
+before the unit boots up then it is not difficult to modify the procedure accordingly.
 
 First, the "SC_part_table.txt" file needs to be modified to include a /dev/sdX8 
-partition. The file included in this project has a commented out line that can 
-be uncommented to include this new partition.
+partition. The file included in this project has a commented out line corresponding
+to partititon 8 that can be easily uncommented to include this new partition.
 
 Apply all the partition creation and formatting instructions above but then at the end
 also create format the data partition as follows. Note that the lvm2 package will need
@@ -613,10 +654,12 @@ appropriate entry in the "SC_part_table.txt" file before it is applied.
 For example the sdX3 and sdX4 root file system partitions might be increased in size from
 1GiB to 2GiB. This might allow extra cross compiled binaries to be installed on the unit.
 
-As another example, partitions sdX5 (Config) and sdX7 (Update) rarely use more
-than about 200MiB so it would be safe to reduce these from 1GiB each to, say, 0.5GiB.
+As another example, partitions sdX5 (Config) and sdX7 (Update) which are normally
+1GiB in size, never actually use more than about 350MiB so it would be safe to reduce
+these partititons from 1GiB each to, say, 0.5GiB.
 
-The only restriction is that the order of the partitions must not be modified.
+Naturally, the order of the partitions and their file system type (ext2/ext4/swap) must
+not be modified.
 
 #### Troubleshooting weird error messages during partitioning
 Sometimes strange problems with partitioning the target drive can be overcome
@@ -627,7 +670,7 @@ corresponding to the target.
 
     dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
         
-These command will take a few minutes to complete executing. 
+This command will take a few minutes to complete executing. 
 
 After the dd command has finished we suggest disconnecting the hard drive
 reader, rebooting the system and then reconnecting the hard drive reader
