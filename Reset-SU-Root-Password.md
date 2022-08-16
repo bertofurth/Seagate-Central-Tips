@@ -3,21 +3,23 @@
 # WARNING : UNFINISHED! UNTESTED! 
 
 ## Summary
-Early versions of Seagate Central firmware allow admin users to gain su / root
-access on the device, however the latest versions of stock firmware deliberately
-disable su / root access by setting the root password to an unknown value.
+Early versions of Seagate Central firmware allow administrator level users to gain
+su / root access on the device, however the latest versions of stock firmware
+deliberately disable su / root access by setting the root password to an unknown 
+value.
 
-Root access is only useful on the Seagate Central if you plan on performing
-custom modifications on the unit. Otherwise it isn't really a neccessity.
+Root access on the Seagate Central is useful for troubleshooting issues and
+for performing custom modifications.
 
-Here is an overview of the methods we describe in this document to get root access
-back on your Seagate Central. 
-
+This document describes the two most convinient methods to regain root access
+on your Seagate Central. It also mentions two other more complicated methods
+that are described in other documents.
+ 
 ### 1) "Planting" a Boot Script (Easy)
-This method involves logging in to the unit via ssh as an admin user then creating
-a bootup script that will reset the root password to a known value on the next
-system reboot. This method requires that you know at least one administrator level 
-username and password combination that works. 
+This method involves logging in to the unit via ssh as an administrator level user,
+then creating a bootup script that will reset the root password to a known value on
+the next system reboot. This method requires that you know at least one administrator 
+level username and password combination for the Seagate Central.
 
 When you set up the unit initially, you would have been asked to supply a username
 and password that would act as the administrator of the unit. This is the username 
@@ -33,8 +35,7 @@ it requires that you are able to physically open up the Seagate Central, remove 
 hard drive and connect it to an external system via a USB hard drive reader.
 
 Opening up the unit is a little tedious but you can do it if you have a "jewellers"
-tool kit for the small screws and a prying tool would also be useful. There are plenty
-of videos on the Internet showing the process. 
+tool kit for the small screws and a prying tool would also be useful. 
 
 USB Hard Drive readers (specifically SATA to USB) are fairly cheap (US$30) and easily
 available at most computer shops or electronics websites.
@@ -44,9 +45,9 @@ The details of this method are explained in a section below.
 ### 3) The Firmware Upgrade Method
 This method involves manipulating a stock Seagate issue firmware image and generating
 replacement firmware that automatically resets the root password to a known value. You
-still need to be able to log in to with an administrator level user via the web
-management page to initiate the upgrade so this method doesn't really have any
-advantages over method 1 if all you want to do is get root access.
+need access to an external Linux system to create the replacement firmware and you
+need to be able to log in to the Seagate Central web management page as an administrator
+to initiate the upgrade.
 
 You would only use this method if you were planning on installing customized firmware
 on the Seagate Central. This method is documented in the "Seagate Central Samba"
@@ -65,19 +66,26 @@ document in this project at
 
 https://github.com/bertofurth/Seagate-Central-Tips/blob/main/Unbrick-Replace-Reset-Hard-Drive.md
 
-## "Planting" a Boot Script
+## Method 1 : "Planting" a Boot Script
 ### ssh
 Secure Shell (ssh) is a means of securely connecting to and managing devices, such as
 the Seagate Central, via a network connection. It usually involves accesing a text
 based command prompt where commands can be issued to a device to control it and
 monitor it's status.
 
-In order to connect to a device via ssh you'll need an ssh client.
+In order to connect to the Seagate Central via ssh you'll need an ssh client.
 
 #### Windows 10 Inbuilt OpenSSH client
 To install the Windows 10 native OpenSSH client see the following URL
 
 https://www.howtogeek.com/336775/how-to-enable-and-use-windows-10s-built-in-ssh-commands/
+
+To summarize the procedure
+
+Go to Settings -> Apps then under "Apps & Features" click on “Optional Features"
+
+Assuming the "OpenSSH Client" is not already in the list of "Installed Features"
+click on "Add a feature", search for "ssh", then install the "OpenSSH Client"
 
 After making sure the OpenSSH client is installed, open the Windows Command Prompt.
 (Hit Windows Key + S and Search for the "Command Prompt" app.) 
