@@ -74,10 +74,7 @@ monitor it's status.
 
 In order to connect to a device via ssh you'll need an ssh client.
 
-#### Windows based ssh clients
-There are a large number of Windows based ssh clients. The most popular ones include
-
-##### Windows 10 InBuilt in ssh client
+#### Windows 10 Inbuilt OpenSSH client
 To install the Windows 10 native OpenSSH client see the following URL
 
 https://www.howtogeek.com/336775/how-to-enable-and-use-windows-10s-built-in-ssh-commands/
@@ -105,7 +102,7 @@ is "192.168.1.50".
     Last login: Tue Aug 16 21:38:43 2022 from 192.168.1.10
     NAS-X:~$
 
-##### Other ssh clients
+#### Other Windows ssh clients
 Here is a list of some popular Open Source ssh clients for Windows. There are dozens 
 of others available
 
@@ -122,7 +119,6 @@ It can be easily invoked from the command line as "ssh username@host". In the
 following example the username "admin" is used to login to the NAS at IP
 address "192.168.1.50"
 
-
     berto@rpi ~$ssh admin@192.168.1.50
     The authenticity of host '192.168.1.50 (192.168.1.50)' can't be established.
     DSA key fingerprint is SHA256:pEz2Rl+ZMS3yoPtiH12fpjXdKXAgD9uAUbq5e7DIF+Q.
@@ -134,8 +130,8 @@ address "192.168.1.50"
     NAS-X:~$
 
 In some cases an error message simmilar to the following may appear because the 
-Seagate Central uses an older, less secure version of encryption key. Some modern
-ssh client may complain as per the following example.
+Seagate Central uses an older, less secure version of encryption. Some modern
+Linux ssh clients may complain as per the following example.
 
     berto@rpi ~$ssh admin@192.168.1.50
     Unable to negotiate with 10.0.2.198 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss
