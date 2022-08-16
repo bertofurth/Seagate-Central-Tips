@@ -134,7 +134,7 @@ The Tappin remote access service was a service that allowed users
 to remotely access content on their Seagate Central. This service
 has been shutdown for some time as per the notice at
 
-https://www.seagate.com/au/en/support/kb/seagate-central-tappin-update-007647en/
+https://www.seagate.com/us/en/support/kb/seagate-central-tappin-update-007647en/
 
 Run the following command to disable the Tappin service.
 
@@ -149,7 +149,7 @@ This was a service where you could view content on your Seagate Central
 remotely or on your phone by registering an account with Seagate. This was
 discontinued as per the notice at
 
-https://www.seagate.com/au/en/support/downloads/seagate-media/
+https://www.seagate.com/us/en/support/downloads/seagate-media/
 
 Note this is different to the Twonky DLNA service that provides access to 
 media for player devices on your home network.
@@ -242,10 +242,6 @@ command can be issued as root.
     
 Some administrators prefer to use mode "711" since some servers need to
 be able to traverse some user's directories but not read the contents.
-
-Future user's home directories can be created with different permissions
-by modifying the permissions of the "/etc/skel" folder. This folder is
-duplicated when a new user's home directory is created.
 
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
