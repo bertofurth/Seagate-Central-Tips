@@ -320,31 +320,22 @@ will be called **sdX**. You will need to modify the commands to use the actual
 drive name of the target hard drive in your system (probably "sdb" or "sdc").
 
 ### Wipe the existing partition table and data on the target hard drive
-This step is not normally required when partitioning and formatting a
-drive however while developing this procedure we found that pre-erasing
-the drive helped to avoid a number of obscure problems. This was particularly
-the case when a drive from a Seagate Central was the target as opposed to
-a new drive being the target.
-
-The first 6 GB of the drive should be overwritten with zeros to completely
-clear any operating system data and partitioning. This is done using the "dd"
-command as seen below. Remember to replace "sdX" with the actual drive name 
-corresponding to the target. **Warning : This is an extremely dangerous 
+The original partitioning on the target hard drive must be removed. This
+can be done using the following command, replacing sdX with the real
+name of the target drive. **Warning : This is an extremely dangerous 
 command!! Make sure to specify the correct target drive name or you
 might destroy data on your computer!!**
 
     sfdisk --delete /dev/sdX
-    dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
     
-This command will take a few minutes to complete executing. 
+If there are any error messages complaining about "Device or resource busy" or
+advising that the system be rebooted, then the hard drive reader should be 
+disconnected from the building system and the system should be rebooted.
+After the building system has come back up re-connect the hard drive reader.
 
-After the commands completes run the "partprobe" command followed by the
-"lsblk" command again. The target hard drive should now have no partitions 
-(i.e. sdX1, sdX2, etc). Also note that the name of the drive **may change**
-after a system reboot.
-
-     partprobe
-     lsblk
+Next, run the "lsblk" command again. The target hard drive should now have no
+partitions (i.e. sdX1, sdX2, etc). Also note that the name of the target drive 
+**may change** after a system reboot.
 
 In the example below we see that the 2.5TB target drive "sda" now has no 
 partitions.
@@ -370,11 +361,27 @@ partition table by editing this file appropriately.)
 
 The partition table can be applied to drive sdX using the commands below. Remember
 to substitute your actual target drive name for sdX. Run partprobe after the
-command has executed to force your system to re-read the partition table.
+command has executed to force your system to re-read the partition table and the
+lsblk command to view the new parititon table.
 
     cat SC_part_table.txt | sfdisk --force /dev/sdX
     partprobe
-    
+    lsblk /dev/sdX
+
+The "lsblk" command should show that the target drive now has 7 partitions as per
+the example below.
+
+    # lsblk /dev/sdb
+    NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    sdb      8:32   0  2.5TB  0 disk
+      sdb1   8:33   0    20M  0 part
+      sdb2   8:34   0    20M  0 part
+      sdb3   8:35   0     1G  0 part
+      sdb4   8:36   0     1G  0 part
+      sdb5   8:37   0     1G  0 part
+      sdb6   8:38   0     1G  0 part
+      sdb7   8:39   0     1G  0 part
+
 Each partition on the drive must now be formatted using the commands listed
 below. Note the file system options specified with the "-O" parameter are
 designed to exactly match those used on a Seagate Central drive.
@@ -420,7 +427,8 @@ Next we mount the partitions
     mount /dev/sdX7 /tmp/SC-Update
     
 The following commands are used to prepare the partitions on the target drive with
-the required folder structures and data.
+the required folder structures and data. Remember to replace the firmware ".img" file
+name with the actual firmware image name you are using.
 
     # The firmware images
     mkdir /tmp/SC-Config/firmware
@@ -448,11 +456,10 @@ the required folder structures and data.
     touch /tmp/SC-Root_2/etc/nas_shares.conf
     chmod 600 /tmp/SC-Root_2/etc/nas_shares.conf
     
- The following set of optional commands will modify the firmware so that it
- changes the system root password to the value XXXXXXXXXX on first boot. Note
- that this is not necessary if you are already using self generated firmware 
- that already does this. We strongly suggest that you modify the XXXXXXXXXX
- password below to a different value of your choosing.
+ The following set of optional commands will modify the firmware so that the 
+ system root password is forced to change to the value XXXXXXXXXX on first boot.
+ We strongly suggest that you modify the XXXXXXXXXX password below to a different 
+ value of your choosing.
  
     cat << EOF > /tmp/SC-Root_1/etc/init.d/change-root-pw.sh
     #!/bin/bash
@@ -611,3 +618,21 @@ than about 200MiB so it would be safe to reduce these from 1GiB each to, say, 0.
 
 The only restriction is that the order of the partitions must not be modified.
 
+#### Troubleshooting weird error messages during partitioning
+Sometimes strange problems with partitioning the target drive can be overcome
+by zeroing the first 6 GB of the drive. This will completely clear out any
+operating system or partitioning data. This can be done using the "dd"
+command as seen below. Remember to replace "sdX" with the actual drive name 
+corresponding to the target. 
+
+    dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
+        
+These command will take a few minutes to complete executing. 
+
+After the dd command has finished we suggest disconnecting the hard drive
+reader, rebooting the system and then reconnecting the hard drive reader
+after the system has rebooted.
+
+After the building system reboots run the "lsblk" command again. The target
+hard drive should now have no partitions (i.e. sdX1, sdX2, etc). Also note 
+that the name of the drive **may change** after a system reboot.
