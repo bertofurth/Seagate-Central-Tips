@@ -84,8 +84,9 @@ After making sure the OpenSSH client is installed, open the Windows Command Prom
 
 Once the Command Prompt window opens issue the "ssh username@NAS-IP-ADDRESS" command
 where "username" is the Seagate Central's administrator username and "NAS-IP-ADDRESS"
-is your Seagate Central's IP address or hostname. When prompted for a password enter
-the administrator user's password. 
+is your Seagate Central's IP address or hostname. When prompted for a password, enter
+the administrator user's password. The first time you connect to a particular host
+you will be asked to confirm that you wish to connect. Simply type "yes".
 
 In the following example the administrator username is "admin" and the NAS IP address
 is "192.168.1.50".
@@ -103,8 +104,8 @@ is "192.168.1.50".
     NAS-X:~$
 
 #### Other Windows ssh clients
-Here is a list of some popular Open Source ssh clients for Windows. There are dozens 
-of others available
+Here is a list of some popular GUI Open Source ssh clients for Windows. There are
+dozens of others available.
 
 Putty :
 https://www.chiark.greenend.org.uk/~sgtatham/putty/
@@ -121,7 +122,7 @@ address "192.168.1.50"
 
     berto@rpi ~$ssh admin@192.168.1.50
     The authenticity of host '192.168.1.50 (192.168.1.50)' can't be established.
-    DSA key fingerprint is SHA256:pEz2Rl+ZMS3yoPtiH12fpjXdKXAgD9uAUbq5e7DIF+Q.
+    DSA key fingerprint is SHA256:pEz2Rl+ZMS3yoPfiH12fpjXdKXAgD9uAUbq5e7DIF+Q.
     This key is not known by any other names
     Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
     Warning: Permanently added '192.168.1.50' (DSA) to the list of known hosts.
@@ -129,12 +130,12 @@ address "192.168.1.50"
     Last login: Tue Aug 16 22:01:23 2022 from 192.168.1.10
     NAS-X:~$
 
-In some cases an error message simmilar to the following may appear because the 
-Seagate Central uses an older, less secure version of encryption. Some modern
-Linux ssh clients may complain as per the following example.
+In some cases, an error message may appear because the Seagate Central uses an 
+older, less secure version of encryption. Some modern Linux ssh clients may complain
+as per the following example.
 
     berto@rpi ~$ssh admin@192.168.1.50
-    Unable to negotiate with 10.0.2.198 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss
+    Unable to negotiate with 192.168.1.50 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss
 
 If this happens then you can configure the Linux ssh client to allow connections
 to hosts using the older version of encryption as follows.
@@ -142,36 +143,90 @@ to hosts using the older version of encryption as follows.
     berto@rpi ~$ echo "HostKeyAlgorithms=+ssh-dss" >> ~/.ssh/config
 
 ### Create a boot script 
+Once you have logged in to the Seagate Central via ssh, confirm that you are
+logged in as an administrator level user by issuing the "groups" command.
 
-Confirm you're an administrator (group)
+This command shows which groups the logged in user belongs to. One of
+the groups should be "root" as per the following example. This confirms
+that the logged in user has the right privelidges to perform this procedure.
 
-Create script
+    NAS-X:~$ groups
+    root users admin
+    
+If the "groups" command does not show the "root" group then you are not logged
+in as an administrator level user, but a normal user.
 
-#!/bin/bash -x
-echo "root:XXXXXXXXXX" | chpasswd
-pwconv
-cp /etc/passwd /usr/config/backupconfig/etc/passwd
-cp /etc/shadow /usr/config/backupconfig/etc/shadow
+    NAS-X:~$ groups
+    users fred
+    
+Once you have confirmed that you are logged in with administrative privelidges,
+issue the following commands. These commands plant a startup script in the system
+that will change the root password to XXXXXXXXXX . Note that when you type or paste
+in these commands to your ssh session, you should replace the XXXXXXXXXX with a
+different password of your chosing.
 
-Login to the web management system and reboot (or just power cycle the device)
+    cat << EOF > /etc/rcS.d/S90change-root-pw.sh
+    #!/bin/bash
+    
+    echo "CHANGING ROOT PASSWORD"
+    echo "root:XXXXXXXXXX" | chpasswd
+    pwconv
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow
+    
+    EOF
+    
+    chmod 770 /etc/rcS.d/S90change-root-pw.sh
 
+Once these commands have been executed, login to the Seagate Central Web Management
+page and reboot the unit (Settings -> System -> Restart). You can of course just
+reboot the unit by power cycling it, but it's always better to reboot a system
+gracefully.
 
+As the unit reboots your ssh session should be disconnected.
 
-After the reboot login as administrator again then issue 
-Edit a boot script that changes the root password
+### Log in as root
+After the unit has rebooted, try to re-establish the ssh session again.
 
-Reboot the unit
+Once the ssh session is established issue the "su" command to try to
+gain root access to the unit. The password should be XXXXXXXXXX or whatever
+that value was changed to in the commands above. For example
 
-su
+    NAS-X:~$ su
+    Password: XXXXXXXXXX
+    NAS-X:/Data/admin# 
 
+The "#" prompt indicates that you are now logged in as the root user.
 
-Change the root password for real (remember all the copy commands)
+### Change the root password properly
+It is strongly suggested that you change the root password again at this point.
 
+The procedure is as follows. Issue the "passwd" command to enter a new password.
+You will be prompted to enter the new password twice as per the following example.
 
-rm the change on boot script so that the unit doesn't change it again.
+    NAS-X:/Data/admin# passwd
+    Enter new UNIX password: ABCD1234
+    Retype new UNIX password: ABCD1234
+    passwd: password updated successfully
 
-Done!!
+After changing the root password with the "passwd" command you must enter the 
+following sequence of commands to ensure that the changed password survives a 
+reboot. This is unique to the Seagate Central and isn't required on most other
+Linux based systems. You must remember to do this in future if you ever change
+the root password on the Seagate Central again.
 
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow
+
+### Disable the boot script
+Now that you have su / root access to the unit we must disable the bootup script
+that changes the root password at each system boot.
+
+This can be done with the following command
+
+    rm /etc/rcS.d/S90change-root-pw.sh
+    
+You now have su / root access on your Seagate Central!
 
 ## Removing the Hard Drive and Connecting it to Another Computer 
 
