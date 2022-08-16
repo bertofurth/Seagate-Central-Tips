@@ -28,18 +28,18 @@ management page of your Seagate Central and you see the "Settings" tab then you 
 use that username / password combination with this method.
 
 ### 2) Removing the Hard Drive and Connecting it to Another Computer (Moderate)
-This involves physically removing the unit's hard drive, connecting it to an external
-Windows or Linux system, then editing operating system files. This method does not
-require that you know any usernames or passwords on the target unit. However, it requires
-that you are willing to physically open up the Seagate Central, remove the hard drive 
-and connect it to an external system via a USB hard drive reader.
+This involves physically removing the Seagate Central's hard drive, connecting it to
+an external Windows or Linux system, then editing operating system files. This method
+does not require that you know any usernames or passwords on the target unit. However,
+it requires that you are able to physically open up the Seagate Central, remove the
+hard drive and connect it to an external system via a USB hard drive reader.
 
-Operning up the unit is a little tedious but you can do it if you have a "jewllers"
-tool kit for the small screws and there are plenty of videos on the Internet showing
-the process. 
+Opening up the unit is a little tedious but you can do it if you have a "jewellers"
+tool kit for the small screws and a prying tool would also be useful. There are plenty
+of videos on the Internet showing the process. 
 
 USB Hard Drive readers (specifically SATA to USB) are fairly cheap (US$30) and easily
-available at most "computer" shops or electronics websites.
+available at most computer shops or electronics websites.
 
 ### 3) The Firmware Upgrade Method
 This method involves manipulating a stock Seagate issue firmware image and generating
@@ -48,22 +48,22 @@ still need to be able to log in to with an administrator level user via the web
 management page to initiate the upgrade so this method doesn't really have any
 advantages over method 1 if all you want to do is get root access.
 
-This method is documented in the "Seagate Central Samba" project at
+You would only use this method if you were planning on installing customized firmware
+on the Seagate Central. This method is documented in the "Seagate Central Samba"
+project at
 
 https://github.com/bertofurth/Seagate-Central-Samba
 
 ### 4) Data Recovery then Full System Wipe.
 This involves removing the hard drive from the unit, connecting it to an external
 Linux system (not Windows) recovering the user Data on the unit, then performing 
-a full system wipe and reinstallation. This would be the preferred method if the
-unit has somehow become unresponsive or unreliable. This method involves physically
-removing the hard drive and connecting it to an external Linux system. 
+a full system wipe and reinstallation. 
 
-This method is described in the "Unbrick-Replace-Reset-Hard-Drive.md" document
-in this project at
+This would be the preferred method if the unit has somehow become unresponsive or
+unreliable. This method is described in the "Unbrick-Replace-Reset-Hard-Drive.md" 
+document in this project at
 
 https://github.com/bertofurth/Seagate-Central-Tips/blob/main/Unbrick-Replace-Reset-Hard-Drive.md
-
 
 ## "Planting" a Boot Script
 How to login via ssh
