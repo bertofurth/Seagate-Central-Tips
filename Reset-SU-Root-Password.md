@@ -54,9 +54,9 @@ project at
 
 https://github.com/bertofurth/Seagate-Central-Samba
 
-### 4) Data Recovery then Full System Wipe.
+### 4) Data Recovery then Full System Wipe
 This involves removing the hard drive from the unit, connecting it to an external
-Linux system (not Windows) recovering the user Data on the unit, then performing 
+Linux system (not Windows), recovering the user Data on the unit, then performing 
 a full system wipe and reinstallation. 
 
 This would be the preferred method if the unit has somehow become unresponsive or
@@ -66,17 +66,115 @@ document in this project at
 https://github.com/bertofurth/Seagate-Central-Tips/blob/main/Unbrick-Replace-Reset-Hard-Drive.md
 
 ## "Planting" a Boot Script
-How to login via ssh
-Maybe include details of easy to use Windows ssh clients
+### ssh
+Secure Shell (ssh) is a means of securely connecting to and managing devices, such as
+the Seagate Central, via a network connection. It usually involves accesing a text
+based command prompt where commands can be issued to a device to control it and
+monitor it's status.
 
+In order to connect to a device via ssh you'll need an ssh client.
+
+#### Windows based ssh clients
+There are a large number of Windows based ssh clients. The most popular ones include
+
+##### Windows 10 InBuilt in ssh client
+To install the Windows 10 native OpenSSH client see the following URL
+
+https://www.howtogeek.com/336775/how-to-enable-and-use-windows-10s-built-in-ssh-commands/
+
+After making sure the OpenSSH client is installed, open the Windows Command Prompt.
+(Hit Windows Key + S and Search for the "Command Prompt" app.) 
+
+Once the Command Prompt window opens issue the "ssh username@NAS-IP-ADDRESS" command
+where "username" is the Seagate Central's administrator username and "NAS-IP-ADDRESS"
+is your Seagate Central's IP address or hostname. When prompted for a password enter
+the administrator user's password. 
+
+In the following example the administrator username is "admin" and the NAS IP address
+is "192.168.1.50".
+
+    Microsoft Windows [Version 10.0.19044.1826]
+    (c) Microsoft Corporation. All rights reserved.
+
+    C:\Users\berto>ssh admin@192.168.1.50
+    The authenticity of host '192.168.1.50 (192.168.1.50)' can't be established.
+    RSA key fingerprint is SHA256:D/BaZ7yDHFRNcrkVUTYMYHJIDpe3KEHPRX2Pb/4aHdZ.
+    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    Warning: Permanently added '192.168.1.50' (RSA) to the list of known hosts.
+    admin@192.168.1.50's password:
+    Last login: Tue Aug 16 21:38:43 2022 from 192.168.1.10
+    NAS-X:~$
+
+##### Other ssh clients
+Here is a list of some popular Open Source ssh clients for Windows. There are dozens 
+of others available
+
+Putty :
+https://www.chiark.greenend.org.uk/~sgtatham/putty/
+
+Tera Term :
+https://ttssh2.osdn.jp/index.html.en
+
+#### Linux ssh
+Most Linux distributions generally come with a command line ssh client installed.
+
+It can be easily invoked from the command line as "ssh username@host". In the
+following example the username "admin" is used to login to the NAS at IP
+address "192.168.1.50"
+
+
+    berto@rpi ~$ssh admin@192.168.1.50
+    The authenticity of host '192.168.1.50 (192.168.1.50)' can't be established.
+    DSA key fingerprint is SHA256:pEz2Rl+ZMS3yoPtiH12fpjXdKXAgD9uAUbq5e7DIF+Q.
+    This key is not known by any other names
+    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    Warning: Permanently added '192.168.1.50' (DSA) to the list of known hosts.
+    admin@192.168.1.50's password:
+    Last login: Tue Aug 16 22:01:23 2022 from 192.168.1.10
+    NAS-X:~$
+
+In some cases an error message simmilar to the following may appear because the 
+Seagate Central uses an older, less secure version of encryption key. Some modern
+ssh client may complain as per the following example.
+
+    berto@rpi ~$ssh admin@192.168.1.50
+    Unable to negotiate with 10.0.2.198 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss
+
+If this happens then you can configure the Linux ssh client to allow connections
+to hosts using the older version of encryption as follows.
+
+    berto@rpi ~$ echo "HostKeyAlgorithms=+ssh-dss" >> ~/.ssh/config
+
+### Create a boot script 
+
+Confirm you're an administrator (group)
+
+Create script
+
+#!/bin/bash -x
+echo "root:XXXXXXXXXX" | chpasswd
+pwconv
+cp /etc/passwd /usr/config/backupconfig/etc/passwd
+cp /etc/shadow /usr/config/backupconfig/etc/shadow
+
+Login to the web management system and reboot (or just power cycle the device)
+
+
+
+After the reboot login as administrator again then issue 
 Edit a boot script that changes the root password
 
 Reboot the unit
 
+su
+
+
 Change the root password for real (remember all the copy commands)
+
 
 rm the change on boot script so that the unit doesn't change it again.
 
+Done!!
 
 
 ## Removing the Hard Drive and Connecting it to Another Computer 
