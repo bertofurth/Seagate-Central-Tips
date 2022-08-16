@@ -5,7 +5,7 @@
 ## Summary
 Early versions of Seagate Central firmware allow admin users to gain su / root
 access on the device, however the latest versions of stock firmware deliberately
-disable su / root access by setting the root password to a random value.
+disable su / root access by setting the root password to an unknown value.
 
 Root access is only useful on the Seagate Central if you plan on performing
 custom modifications on the unit. Otherwise it isn't really a neccessity.
