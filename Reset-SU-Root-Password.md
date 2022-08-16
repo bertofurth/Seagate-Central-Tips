@@ -113,11 +113,11 @@ https://www.chiark.greenend.org.uk/~sgtatham/putty/
 Tera Term :
 https://ttssh2.osdn.jp/index.html.en
 
-#### Linux ssh
+#### Linux ssh client
 Most Linux distributions generally come with a command line ssh client installed.
 
-It can be easily invoked from the command line as "ssh username@host". In the
-following example the username "admin" is used to login to the NAS at IP
+It can be easily invoked from the terminal command line as "ssh username@host". In
+the following example the username "admin" is used to login to the NAS at IP
 address "192.168.1.50"
 
     berto@rpi ~$ssh admin@192.168.1.50
