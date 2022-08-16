@@ -23,9 +23,7 @@ When you set up the unit initially, you would have been asked to supply a userna
 and password that would act as the administrator of the unit. This is the username 
 and password you can use with this method. 
 
-Put another way, if you know what username and password to use to login to the web 
-management page of your Seagate Central and you see the "Settings" tab then you can
-use that username / password combination with this method.
+The details of this method are explained in a section below.
 
 ### 2) Removing the Hard Drive and Connecting it to Another Computer (Moderate)
 This involves physically removing the Seagate Central's hard drive, connecting it to
@@ -40,6 +38,8 @@ of videos on the Internet showing the process.
 
 USB Hard Drive readers (specifically SATA to USB) are fairly cheap (US$30) and easily
 available at most computer shops or electronics websites.
+
+The details of this method are explained in a section below.
 
 ### 3) The Firmware Upgrade Method
 This method involves manipulating a stock Seagate issue firmware image and generating
