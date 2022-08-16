@@ -104,8 +104,8 @@ is "192.168.1.50".
     NAS-X:~$
 
 #### Other Windows ssh clients
-Here is a list of some popular GUI Open Source ssh clients for Windows. There are
-dozens of others available.
+Here is a list of some popular Open Source GUI ssh clients for Windows. There are
+dozens of other ssh clients for Windows available.
 
 Putty :
 https://www.chiark.greenend.org.uk/~sgtatham/putty/
