@@ -151,7 +151,7 @@ discontinued as per the notice at
 
 https://www.seagate.com/us/en/support/downloads/seagate-media/
 
-Note this is different to the Twonky DLNA service that provides access to 
+Note, this is different to the Twonky DLNA service that provides access to 
 media for player devices on your home network.
 
 Run the following commands to disable the Media Server.
@@ -161,7 +161,7 @@ Run the following commands to disable the Media Server.
     update-rc.d -f media_server_allow_scan remove
     update-rc.d -f media_server_default_start remove
 
-Reinstate this service with the following commands.
+Reinstate this service with the following commands (but why???)
 
     update-rc.d media_server_daemon defaults 19 
     update-rc.d media_server_ui_daemon defaults 69 
