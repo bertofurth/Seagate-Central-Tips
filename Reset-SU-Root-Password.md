@@ -1,4 +1,4 @@
-# Set the SU / Root Password on a Seagate Central
+# Reset the SU / Root Password on a Seagate Central
 
 # WARNING : UNFINISHED! UNTESTED! 
 
