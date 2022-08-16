@@ -598,8 +598,8 @@ parties. These do not need to be followed.
 #### Save the "Config" and "Data" partitions
 An alternative to wiping all the user and configuration Data on the Seagate
 Central Drive is to just try to replace the operating system components.
-This could be done in an initial attempt. If it fails then you could move
-one to wiping the whole drive.
+This could be done in an initial attempt to fix a bricked unit. If this kind
+of attempt failed then you could move on to wiping the whole drive.
 
 This can be done by following the procedure above with the following 
 modifications.
