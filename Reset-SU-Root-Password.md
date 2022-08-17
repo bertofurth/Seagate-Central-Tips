@@ -1,7 +1,4 @@
 # Reset the SU / Root Password on a Seagate Central
-
-# WARNING : UNFINISHED! UNTESTED! 
-
 ## Summary
 Early versions of Seagate Central firmware allow administrator level users to gain
 su / root access on the device, however the latest versions of stock firmware
@@ -11,7 +8,7 @@ value.
 Root access on the Seagate Central is useful for troubleshooting issues and
 for performing custom modifications.
 
-This document describes the two most convinient methods to regain root access
+This document describes the two most convenient methods to regain root access
 on your Seagate Central. It also mentions two other more complicated methods
 that are described in other documents.
  
@@ -40,7 +37,8 @@ tool kit for the small screws and a prying tool would also be useful.
 USB Hard Drive readers (specifically SATA to USB) are fairly cheap (US$30) and easily
 available at most computer shops or electronics websites.
 
-The details of this method are explained in a section below.
+The details of this method are explained in a section below (but the procedure is 
+quite tedious. If you try it and it doesn't work then let me know.)
 
 ### 3) The Firmware Upgrade Method
 This method involves manipulating a stock Seagate issue firmware image and generating
@@ -69,7 +67,7 @@ https://github.com/bertofurth/Seagate-Central-Tips/blob/main/Unbrick-Replace-Res
 ## Method 1 : "Planting" a Boot Script
 ### ssh
 Secure Shell (ssh) is a means of securely connecting to and managing devices, such as
-the Seagate Central, via a network connection. It usually involves accesing a text
+the Seagate Central, via a network connection. It usually involves accessing a text
 based command prompt where commands can be issued to a device to control it and
 monitor it's status.
 
@@ -156,7 +154,7 @@ logged in as an administrator level user by issuing the "groups" command.
 
 This command shows which groups the logged in user belongs to. One of
 the groups should be "root" as per the following example. This confirms
-that the logged in user has the right privelidges to perform this procedure.
+that the logged in user has the right privileges to perform this procedure.
 
     NAS-X:~$ groups
     root users admin
@@ -168,7 +166,7 @@ in as an administrator level user, but a normal user.
     users fred
     
 Once you have confirmed that you are logged in to the Seagate Central with 
-administrative privelidges, issue the following commands in your ssh
+administrative privileges, issue the following commands in your ssh
 session. These commands plant a startup script in the Seagate Central operating
 system that will change the root password to XXXXX at next boot (we'll change this
 password later). I'd suggest just copying and pasting these commands a few lines at 
@@ -176,11 +174,12 @@ a time in to your ssh session to ensure that no mistakes are made.
 
     cat << EOF > /etc/rcS.d/S90change-root-pw.sh
     #!/bin/bash
-    echo "CHANGING ROOT PASSWORD"
+    echo "Changing root password" > /dev/kmsg
     echo "root:XXXXX" | chpasswd
     pwconv
     cp /etc/passwd /usr/config/backupconfig/etc/passwd
     cp /etc/shadow /usr/config/backupconfig/etc/shadow   
+    echo "Finished changing root password" > /dev/kmsg
     EOF
     
     chmod 770 /etc/rcS.d/S90change-root-pw.sh
@@ -237,32 +236,388 @@ This can be done with the following command
     
 You now have su / root access on your Seagate Central!
 
-## Removing the Hard Drive and Connecting it to Another Computer 
-This method is essentially the same concept as the method presented above except
-we will be inserting the bootup script manually
+## Method 2 : Removing the Hard Drive and Connecting it to Another Computer 
 
+** NOTE : THIS METHOD IS EXTREMELY TEDIOUS. I HAVEN'T BOTHERED FULLY REFINING
+AND TESTING IT BECAUSE IT'S SO INVOLVED AND CONVOLUTED. I STRONGLY SUGGEST USING
+METHOD 1. IF FOR SOME REASON YOU HAVE TO USE THIS METHOD THEN LET ME KNOW IF
+IT WORKS OR DOESN'T WORK. **
 
-GIVE DETAILS ON CHANGING THE PASSWORD FOR AN ADMIN USER AS WELL??
+This method involves mounting the Seagate Central hard drive on an external
+computer and manually modifying a bootup script to change the root password
+to a known value. This method is a quite a bit more complicated than the
+method above and much more prone to error, so please only use this method 
+if you are really unable to use method 1.
 
+### Open the Seagate Central and Take out the Hard Drive
+As per the pre-requisites section, search for a video detailing instructions
+on opening the Seagate Central and how to pull out the hard drive. You'll
+need a "jewellers" screwdriver kit and potentially a pry tool to open the
+plastic case. There are dozens of videos on the topic. One example is
 
-Give a list of the tools needed and then the files that need to be edited. 
-(Copy from Data recovery Tip)
+https://www.dailymotion.com/video/x6exylx
 
-Detail Windows Method with Paragon Software - WILL NOTEPAD WORK???
+Once the unit is opened and the four square rubber pads are unscrewed from the 
+sides of the internal metal frame, the hard drive can be pulled away and 
+disconnected from the main circuit board with a moderate amount of force.
 
+### Connect the Hard Drive to an external USB Hard Drive Reader
+The hard drive in a Seagate Central is a 3.5 inch drive with a SATA interface. Use 
+a hard drive adapter / reader that can connect to this kind of hard disk. Most
+hard disk readers available as of the writing of this document in 2022 can connect 
+to this type of drive because it's currently the most common type of hard drive in
+the world. I'd also recommend getting a USB 3.0 or later capable reader because
+the extra speed of a more modern USB interface will make file transfers a lot
+faster.
 
-Detail Linux Method using "mount"
+Some examples of suitable hard drive readers are seen at the following
+links.
 
+https://flexgate.me/best-hard-drive-reader/
 
-Remember to change the password again.
+https://geekymag.com/best/hard-drive-reader/
 
-As per the other method delete the boot script.
+At this point you may either follow the "Windows Specific Instructions" or the
+"Linux Specific Instructions".
 
-Note that if the unit does happen to reboot to the backup firmware then the
-root password will be reset to the value in the script. Unlikely
-to happen.
+### Windows Specific Instructions
+If you are performing this procedure using a Windows based system then here
+are the instructions to follow. These instructions assume you are using
+an up to date version of Windows 10.
 
+#### Install and run "Linux File Systems for Windows by Paragon Software"
+Before you connect the hard drive reader to your PC, install the
+"Linux File Systems for Windows by Paragon Software" tool available
+from
 
+https://www.paragon-software.com/home/linuxfs-windows/
 
+This tool from Paragon lets Windows read data from a variety of different 
+kinds of Linux file systems. There are other tools available such as
+Windows subsystem for Linux (WSL) however the Paragon tool seems to be
+the most powerful and easy to use.
+
+This tool is available as a 10 day free trial version. Hopefully that
+will be enough time to perform this procedure.
+
+Download and install the tool as normal but when the 
+"Product Activation" screen appears tick the "Start 10-Day Trial."
+option rather than the default "Activate" option which requires that you've
+bought a license.
+
+I would recommend purchasing a full license if you feel you might need
+to perform this sort of task again. In my view the software is very
+reasonably priced for the functionality it provides.
+
+After the software is installed, run it. Once activated it should 
+automatically scan all the drives connected to your system.
+
+I would then highly recommend changing the default behaviour of the program
+so that it does not automatically mount partitions and so that it mounts them
+as read-only by default. This can be done by clicking on the three horizonal
+lines menu item to the right of "Sign in", then clicking on "Settings" then
+turning "Mount automatically" to "Off" and setting "Mount volumes in"
+to "Read-only". This will ensure that Windows does not accidentally overwrite
+critical data on the Seagate Central drive or any other Linux drive that you
+connect to your system.
+
+#### Connect the hard drive reader to your Windows PC
+**Please read and understand this entire section before connecting the 
+hard drive reader to your PC**
+
+When you connect the USB drive reader containing the Seagate Central
+drive to your Windows system, you *may* be prompted with a series of 
+messages similar to the following
+
+    You need to format the disk in drive X: before you can use it.
+
+    Do you want to format it?
+
+It is **essential** that you click on "Cancel" for all of these messages. Do
+not let Windows format these drives!
+
+You may also see notifications similar to the following
+
+    Autoplay
+    
+    Local Disk X:
+    
+    Select and chose what happens with removable drive X:
+
+Do not click on those notifications. Just ignore them.
+
+If you accidentally let Windows format any of these drives then it will be extremely 
+difficult to retrieve the data on them. Note that it would not be *impossible*
+to retrieve the data but doing so is way beyond the scope of this document.
+
+#### Mount the Root partitions
+After the hard drive reader is connected to the PC, the Paragon Software tool 
+should recognize the newly inserted drive.
+
+If you scroll down through the list of recognized partitions on the left hand side of
+the app window, you should see two 1GB partitions called "Root_File_System". These are
+the 2 partitions we are interested in. 
+
+If you have configured the Paragon tool so that it does not automatically mount
+new drives then at this point you can click on the first of the "Root_File_System"
+partitions to select it, then click on the "Mount" option at the top of the window 
+to assign the drive a letter for access by the Windows system. Make sure to select
+"Read-write" so that we can write data to the partition. Also select "Set the
+default ownership and permissions of the mounted volume" to User = 0, Group = 0,
+and Permissions = 770. Then click on "Mount". Do the same for the other
+"Root_File_System" and mount it as well.
+
+#### Create the bootup script
+In this part of the procedure we edit one of the startup scripts on the Seagate
+Central hard drive and add a section that changes the root password. 
+
+This part of the procedure depends on using a recent version of the Notepad
+editor (2019 or later). This is due to an issue related to End of Line (EOL)
+characters. If you'd like to read more about this issue then here is an insightful
+article.
+
+Introducing extended line endings support in Notepad : 
+https://devblogs.microsoft.com/commandline/extended-eol-in-notepad/
+
+Open the first of the root partitions in Windows Explorer and navigate to 
+the /etc/init.d/ directory. There should be a file in that directory called
+"procps.sh" Note that you may need to select "View" -> "File Name Extentions" 
+in Windows Explorer to see the ".sh" suffix. This file is executed as part of 
+the startup sequence on the Seagate Central. It's not a particularly important
+startup file so if it gets damaged it won't significantly affect to operation
+of the unit. (It actually does nothing!!)
+
+This file needs to be opened using the Notepad editor. To ensure that the file is
+opened by Notepad and not a different text editor, right click on the file, select 
+"Open with..." and in the dialog that appears select "Notepad".
+
+Do not use a different text editor such as Microsoft Word or Wordpad. This is related
+to the EOL issue that was discussed above.
+
+When the file is opened you should see the initial contents which will look as
+follows
+
+    #!/bin/sh
+    
+    SYSCTL_CONF="/etc/sysctl.conf"
+    if [ -f "${SYSCTL_CONF}" ]; then
+            /sbin/sysctl -q -p "${SYSCTL_CONF}"
+    fi
+
+Confirm that in the bottom right hand corner of the Notepad window you see a
+status indicator that says "Unix (LF)". This is vitally important. This means that
+Notepad has recognized that this file is going to be used on a Unix system and 
+Notepad will generate End of Line (EOL) characters accordingly.
+
+If the status box says "Windows (CRLF)" or there's no such status box then something
+has gone wrong and you must not proceed with editing the file. 
+
+Once the file has been opened and you've confirmed "Unix (LF)" is displayed, some
+extra commands can be added to the end of the file as follows.
+
+    #!/bin/sh
+        
+    SYSCTL_CONF="/etc/sysctl.conf"
+    if [ -f "${SYSCTL_CONF}" ]; then
+            /sbin/sysctl -q -p "${SYSCTL_CONF}"
+    fi
+    
+    echo "Changing root password" > /dev/kmsg
+    echo "root:XXXXX" | chpasswd
+    pwconv
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow   
+    echo "Finished changing root password" > /dev/kmsg
+    
+Save the file and exit from Notepad.
+
+Now you must repeat this process for the /etc/init.d/procps.sh file on
+the other Root_File_System partition that has been mounted by the Paragon
+software.
+
+Once **both** of these files have been edited then **both** of the partitions
+should be unmounted in the Paragon Software tool.
+
+At this point proceed to the section entitled "Reinstall the target hard drive and 
+boot up the Seagate Central"
+
+### Linux specific instructions
+If you are performing this procedure using a Linux based system then here
+are the instructions to follow. 
+
+#### Attach the Seagate Central hard drive to you Linux System
+Login to your Linux system as the root user or prefix each of the commands
+listed from this point with "sudo".
+
+Before you connect the target hard drive to the Linux system, run the
+"lsblk" command to see a list of the drives that are currently connected
+to your system. Take a note of their names. They will most likely be named
+something along the lines of /dev/sda or /dev/sdb and so forth.
+
+Here is an example taken from a PC running a live USB Linux distribution
+
+    # lsblk
+    NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    loop0    7:0    0 542.4M  1 loop /run/overlay/squashfs_container
+    loop1    7:1    0   3.3G  1 loop /run/overlay/rootfsbase
+    sda      8:0    0 931.5G  0 disk
+      sda1   8:1    0 132.4M  0 part
+      sda2   8:2    0 148.9G  0 part
+      sda3   8:3    0   992K  0 part
+      sda4   8:4    0     1K  0 part
+      sda5   8:5    0     2G  0 part
+      sda6   8:6    0 780.5G  0 part
+    sdb      8:16   1  14.5G  0 disk
+      sdb1   8:17   1 622.5M  0 part /run/overlay/live
+      sdb2   8:18   1    20M  0 part
+      sdb3   8:19   1  13.8G  0 part /run/overlay/overlayfs
+    sr0     11:0    1  1024M  0 rom
+
+Here is an example from a Raspberry PI 4B
+
+    # lsblk
+    NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    mmcblk0     179:0    0 119.1G  0 disk
+      mmcblk0p1 179:1    0    64M  0 part /boot/efi
+      mmcblk0p2 179:2    0   500M  0 part [SWAP]
+      mmcblk0p3 179:3    0 118.5G  0 part /
+
+Insert the Seagate Central hard drive in the USB hard drive reader and attach
+it to your external Linux system.
+
+After about 20 seconds re-run the "lsblk" command to confirm that the Seagate
+Central drive has been recognized.
+
+In the example below we have inserted a 4TB Seagate Central drive into a PC. Note
+that the new drive is called "sdc" and contains a number of pre-existing Seagate
+Central partitions.
+
+    # lsblk
+    NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+    loop0    7:0    0 542.4M  1 loop /run/overlay/squashfs_container
+    loop1    7:1    0   3.3G  1 loop /run/overlay/rootfsbase
+    sda      8:0    0 931.5G  0 disk
+      sda1   8:1    0 132.4M  0 part
+      sda2   8:2    0 148.9G  0 part
+      sda3   8:3    0   992K  0 part
+      sda4   8:4    0     1K  0 part
+      sda5   8:5    0     2G  0 part
+      sda6   8:6    0 780.5G  0 part
+    sdb      8:16   1  14.5G  0 disk
+      sdb1   8:17   1 622.5M  0 part /run/overlay/live
+      sdb2   8:18   1    20M  0 part
+      sdb3   8:19   1  13.8G  0 part /run/overlay/overlayfs
+    sdc      8:32   0   3.6T  0 disk
+      sdc1   8:33   0    20M  0 part
+      sdc2   8:34   0    20M  0 part
+      sdc3   8:35   0     1G  0 part
+      sdc4   8:36   0     1G  0 part
+      sdc5   8:37   0     1G  0 part
+      sdc6   8:38   0     1G  0 part
+      sdc7   8:39   0     1G  0 part
+      sdc8   8:40   0   3.6T  0 part    
+    sr0     11:0    1  1024M  0 rom
+
+### Mount the Seagate Central Root File Systems
+
+Replace "sdX" with the Seagate Central's hard drive name (probably sdb or sdc)
+
+    mkdir /tmp/SC-Root_1 /tmp/SC-Root_2 
+    mount /dev/sdX3 /tmp/SC-Root_1
+    mount /dev/sdX4 /tmp/SC-Root_2
+
+### Modify the /etc/init.d/procps.sh file
+Edit the /etc/init.d/procps.sh file on each partiton using nano or your favourite
+text editor. This is an unimportant startup file that we will modify to piggyback
+our root password changing commands. This startup file won't be missed if it gets
+destroyed.
+
+    nano /tmp/SC-Root_1/etc/init.d/procps.sh
+
+The props.sh file will initially look like this.
+
+    #!/bin/sh
+    
+    SYSCTL_CONF="/etc/sysctl.conf"
+    if [ -f "${SYSCTL_CONF}" ]; then
+            /sbin/sysctl -q -p "${SYSCTL_CONF}"
+    fi
+
+Add the extra password modification commands as seen below so that procps.sh
+looks like this
+
+    #!/bin/sh
+        
+    SYSCTL_CONF="/etc/sysctl.conf"
+    if [ -f "${SYSCTL_CONF}" ]; then
+            /sbin/sysctl -q -p "${SYSCTL_CONF}"
+    fi
+    
+    echo "Changing root password" > /dev/kmsg
+    echo "root:XXXXX" | chpasswd
+    pwconv
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow   
+    echo "Finished changing root password" > /dev/kmsg
+    
+Save the file.
+
+Make sure to also edit the file on the second root partition as well
+
+     nano /tmp/SC-Root_2/etc/init.d/procps.sh
+
+After both files have been modified unmount both the root file systems.
+
+     umount /tmp/SC-Root_1
+     umount /tmp/SC-Root_2
+          
+### Reinstall the target hard drive and boot up the Seagate Central
+Disconnect the USB Hard Drive reader from your external system and remove
+the Seagate Central drive from the reader. Reinsert the hard drive back in the
+Seagate Central by sliding it into the metal frame and connecting it to the
+SATA interface.
+
+Note that the plastic lid can be left off the unit during the initial test run
+just in case there's a problem and the hard drive needs to be removed again.
+
+Reconnect the Ethernet cabling and the power cable then power on the unit.
+
+The LED status light on the unit should blink green for a few minutes and then
+go solid to indicate the Linux kernel has loaded properly. 
+
+### Change the root password properly
+After waiting another few minutes login to the Seagate Central via ssh using
+any valid username and password (it doesn't have to be an administrator). Issue 
+the "su" command and enter the XXXXX password. Next, issue the "passwd" command
+and enter a new password. You will be prompted to enter the new password twice 
+as per the following example.
+
+    NAS-X:~$ su
+    Password: XXXXX
+    NAS-X:/Data/admin# passwd
+    Enter new UNIX password: mypassword1234
+    Retype new UNIX password: mypassword1234
+    passwd: password updated successfully
+
+After changing the root password with the "passwd" command you must enter the 
+following sequence of commands to ensure that the changed password survives a 
+reboot. This is unique to the Seagate Central and isn't required on most other
+Linux based systems. You must remember to do this in future if you ever change
+the root password on the Seagate Central again.
+
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow
+
+### Reset the /etc/init.d/procps.sh file
+Now delete all the password modification stuff from props.sh. The following sed
+command will remove the extra lines that we added to procps.sh and get the
+file back to it's original state.
+
+    sed -i '/root/Q' /etc/init.d/procps.sh
+
+** Note that the procps.sh file on the backup partition will still contain the
+root password changing commands so if the unit ever needs to fail over to the
+backup kernel (only if something goes catastrophically wrong), the root password
+will be reset back to XXXXX. **
 
 
