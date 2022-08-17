@@ -21,6 +21,8 @@ to perform experiments with.
 * Wipe the existing partition table on the target hard drive
 * Create a new Seagate Central style partition table on the target hard drive
 * Install Seagate Central firmware on the target hard drive
+* (Optional) Configure the unit to grant su / root access
+* Disconnect the target hard drive from the external Linux System
 * Reinsert the target hard drive back in the Seagate Central
 
 ## Warning
@@ -428,6 +430,17 @@ system on a Seagate Central uses a non standard 64K memory page size.
     
 At this point the target drive is properly formatted.
 
+Note that we do not create the user Data partition (sdX8) in this procedure. This 
+is because the Seagate Central will automatically detect that it is missing and
+it will be created as the unit boots up.
+
+Note however, that when a Seagate Central comes "fresh out of the box" a number of
+folders under the "Public" folder called "Music", "Photos" and "Videos"
+are included. These contain about half a Gigabyte of sample media files. These folders
+and sample media files are not automatically recreated using this procedure. If
+desired, you can create these folders manually once the Seagate Central is up and
+running.
+
 ### Install Seagate Central firmware on the target hard drive
 In this part of the procedure we populate the target drive partitions with
 the required Linux Operating System data as contained by the Seagate Central 
@@ -478,16 +491,18 @@ name with the actual firmware image name you are using.
     touch /tmp/SC-Root_2/etc/nas_shares.conf
     chmod 600 /tmp/SC-Root_2/etc/nas_shares.conf
     
- The following set of optional commands will modify the firmware so that the 
- system root password is forced to change to the value XXXXXXXXXX on first boot.
- We strongly suggest that you modify the XXXXXXXXXX password below to a different 
- value of your choosing.
- 
+ ### Optional -  Configure the Seagate Central to grant su / root access   
+ The following set of **optional** commands will modify the firmware so that the 
+ su / root access is enabled for the Seagate Central. It works by forcing the 
+ system's root password to be set to the value XXXXX on first boot. You can
+ modify this XXXXX value however we'll be changing the root password properly
+ later in the procedure anyway.
+  
     cat << EOF > /tmp/SC-Root_1/etc/init.d/change-root-pw.sh
     #!/bin/bash
     
     echo "CHANGING ROOT PASSWORD"
-    echo "root:XXXXXXXXXX" | chpasswd
+    echo "root:XXXXX" | chpasswd
     pwconv
     cp /etc/passwd /usr/config/backupconfig/etc/passwd
     cp /etc/shadow /usr/config/backupconfig/etc/shadow
@@ -512,7 +527,7 @@ name with the actual firmware image name you are using.
     cp /tmp/SC-Root_1/etc/init.d/disable-change-root-pw.sh /tmp/SC-Root_2/etc/init.d/
     ln -s ../init.d/disable-change-root-pw.sh /tmp/SC-Root_2/etc/rcS.d/S91disable-change-root-pw.sh
 
-
+### Disconnect the target hard drive from the building Linux System
 Once the required data has been placed on the target drive, unmount the partitions.
 
     umount /tmp/SC-Kernel_1
@@ -524,17 +539,6 @@ Once the required data has been placed on the target drive, unmount the partitio
     
 After this point it should be safe to disconnect the hard drive reader from the
 building system and remove the target hard drive from the reader.
-
-Note that we do not create the user Data partition (sdX8) in this procedure. This 
-is because the Seagate Central will automatically detect that it is missing and
-it will be created as the unit boots up.
-
-Note however, that when a Seagate Central comes "fresh out of the box" a number of
-folders under the Public folder called "Music", "Photos" and "Videos"
-are included. These contain about half a Gigabyte of sample media files. These folders
-and sample media files are not automatically recreated using this procedure. If
-desired, you can create these folders manually once the Seagate Central is up and
-running.
 
 ### Reinstall the target hard drive and boot up the Seagate Central
 Reinsert the target hard drive in the Seagate Central by sliding it into
@@ -594,6 +598,31 @@ IP address of 192.168.1.58, so you would browse to http://192.168.1.58
         WORKGROUP       <1e> - <GROUP> B <ACTIVE>
         WORKGROUP       <00> - <GROUP> B <ACTIVE>
 
+### Change the root password properly
+If you decided to add the step that modified the root password on first boot, then
+it is strongly suggested that you change the root password again at this point.
+
+Login to the Seagate Central via ssh using the administrator username and password 
+you configured using the Web Management interface. Issue the "su" command and enter the
+XXXXX password (or whatever value you used) to become the root user. Next, issue
+the "passwd" command and enter a new password. You will be prompted to enter the
+new password twice as per the following example.
+
+    Seagate-8ACB4F:~$ su
+    Password: XXXXX
+    Seagate-8ACB4F:/Data/admin# passwd
+    Enter new UNIX password: mypassword1234
+    Retype new UNIX password: mypassword1234
+    passwd: password updated successfully
+
+After changing the root password with the "passwd" command you must enter the 
+following sequence of commands to ensure that the changed password survives a 
+reboot. This is unique to the Seagate Central and isn't required on most other
+Linux based systems. You must remember to do this in future if you ever change
+the root password on the Seagate Central again.
+
+    cp /etc/passwd /usr/config/backupconfig/etc/passwd
+    cp /etc/shadow /usr/config/backupconfig/etc/shadow
 
 ## Technical Notes
 Below are some technical notes that are only included for the sake of interested
