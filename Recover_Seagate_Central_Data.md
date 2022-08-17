@@ -344,7 +344,7 @@ hard drive reader.
     Sector size (logical/physical): 512 bytes / 512 bytes
     I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
     Disklabel type: gpt
-    Disk identifier: C2FT0290-349D-3XV8-24L5-GD2R9SMV9213
+    Disk identifier: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
     
     Device        Start        End    Sectors  Size Type
     /dev/sda1      2048      43007      40960   20M Microsoft basic data
