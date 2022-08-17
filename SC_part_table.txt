@@ -6,7 +6,6 @@
 label: gpt
 unit: sectors
 first-lba: 34
-sector-size: 512
 
 /dev/sdb1 : start=        2048, size=       20MiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Kernel_1"
 /dev/sdb2 : size=       20MiB, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, name="Kernel_2"
