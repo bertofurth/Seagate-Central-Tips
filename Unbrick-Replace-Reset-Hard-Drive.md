@@ -80,11 +80,16 @@ https://en.opensuse.org/SDB:Create_a_Live_USB_stick_using_Windows
 https://download.opensuse.org/distribution/openSUSE-current/live/
 
 ### Required software tools on the building Linux host
-#### sfdisk version later than 2.26
-This procedure makes use of version 2.26 or later of the "sfdisk" hard drive
-partitioning tool. This tool should be available on any modern Linux system 
-with software more recent than 2015 or so. Earlier versions cannot
+#### sfdisk version later than 2.28 (2.37 or later is best)
+This procedure makes use of version 2.28 or later of the "sfdisk" hard drive
+partitioning tool. Version 2.37 or later is even better as these more recent
+versions will partition the disk in a slightly more efficient manner. 
+
+This tool should be available on any modern Linux system with software more
+recent than 2015 or so. Versions of sfdisk earlier than v2.26 cannot
 manipulate the "GPT" style partition table as used by the Seagate Central.
+Versions earlier than v2.28 do not have the "--delete" flag which is
+also desireable in this procedure.
 
 Issue the "sfdisk -v" command as per the following example to
 confirm the version of "sfdisk" in your system.
@@ -323,17 +328,17 @@ drive name of the target hard drive in your system (probably "sdb" or "sdc").
 
 ### Wipe the existing partition table and data on the target hard drive
 The original partitioning on the target hard drive must be removed. This
-can be done using the following command, replacing sdX with the real
-name of the target drive. **Warning : This is an extremely dangerous 
-command!! Make sure to specify the correct target drive name or you
-might destroy data on your computer!!**
+can be done using the following sfdisk command (version 2.28 and later).
+Be sure to replace sdX with the real name of the target drive. **Warning
+: This is an extremely dangerous command!! Make sure to specify the correct
+target drive name or you might destroy data on your computer!!**
 
     sfdisk --delete /dev/sdX
     
 If there are any error messages complaining about "Device or resource busy" or
 advising that the system be rebooted, then the hard drive reader should be 
 disconnected from the building system and the system should be rebooted.
-After the building system has come back up re-connect the hard drive reader.
+After the building system has come back up, re-connect the hard drive reader.
 
 Next, run the "lsblk" command again. The target hard drive should now have no
 partitions (i.e. sdX1, sdX2, etc). Also note that the name of the target drive 
@@ -353,7 +358,7 @@ partitions.
 If you are using a hard drive from a Seagate Central then it is advised that
 you "zero out" the first 6GiB of the drive. During the devlopment of this
 procedure we found that a number of obscure issues can be overcome when
-re-partitioning a drive from a Segate central by zeroing out the first 6GiB.
+re-partitioning a drive from a Segate central by performing this step.
 
 This can be done using the "dd" command as seen below. Remember to replace
 "sdX" with the actual drive name corresponding to the target. **Warning : 
@@ -365,8 +370,8 @@ target drive name or you might destroy data on your computer!!**
 This command will take a few minutes to complete executing. 
 
 ### Create a new Seagate Central style partition table on the target hard drive
-In this section we use the "sfdisk" tool (v2.26 or later) to
-configure the partitions on the Seagate Central and then we format the
+In this section we use the "sfdisk" tool (v2.26 or later, but ideally v2.37 or 
+later) to configure the partitions on the Seagate Central and then we format the
 partitions. 
 
 A template file in this project called "SC_part_table.txt" can be used
