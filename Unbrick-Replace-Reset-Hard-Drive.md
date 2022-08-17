@@ -684,3 +684,30 @@ after the system has rebooted.
 After the building system reboots run the "lsblk" command again. The target
 hard drive should now have no partitions (i.e. sdX1, sdX2, etc). Also note 
 that the name of the drive **may change** after a system reboot.
+
+#### Partition characteristics of an original Seagate Central Drive
+Below are the file system characteristics of a "fresh out of the box" 
+Seagate Central drive as taken from a Seagate Central 4TB model. This
+is for reference purposes only.
+
+    # sfdisk -l /dev/sdb
+    Disk /dev/sdb: 3.64 TiB, 4000787030016 bytes, 7814037168 sectors
+    Disk model: 000-1F2168
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
+    Disklabel type: gpt
+    Disk identifier: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+    
+    Device        Start        End    Sectors  Size Type
+    /dev/sdb1      2048      43007      40960   20M Microsoft basic data
+    /dev/sdb2     43008      83967      40960   20M Microsoft basic data
+    /dev/sdb3     83968    2181119    2097152    1G Microsoft basic data
+    /dev/sdb4   2181120    4278271    2097152    1G Microsoft basic data
+    /dev/sdb5   4278272    6375423    2097152    1G Microsoft basic data
+    /dev/sdb6   6375424    8472575    2097152    1G Linux swap
+    /dev/sdb7   8472576   10569727    2097152    1G Microsoft basic data
+    /dev/sdb8  10569728 7814037134 7803467407  3.6T Linux LVM
+
+Further details of individual file system characteristics are included in
+this project in the file called "profile-of-native-SC-disk.txt".  
