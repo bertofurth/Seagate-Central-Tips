@@ -1,0 +1,437 @@
+#
+# This file contains commands showing the characterstics of
+# a native drive from a freshly unboxed 4TB Seagate Central.
+# Unique identifiers have been replaced with XXXX
+
+# sfdisk -l /dev/sdb
+Disk /dev/sdb: 3.64 TiB, 4000787030016 bytes, 7814037168 sectors
+Disk model: 000-1F2168
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
+Disklabel type: gpt
+Disk identifier: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+Device        Start        End    Sectors  Size Type
+/dev/sdb1      2048      43007      40960   20M Microsoft basic data
+/dev/sdb2     43008      83967      40960   20M Microsoft basic data
+/dev/sdb3     83968    2181119    2097152    1G Microsoft basic data
+/dev/sdb4   2181120    4278271    2097152    1G Microsoft basic data
+/dev/sdb5   4278272    6375423    2097152    1G Microsoft basic data
+/dev/sdb6   6375424    8472575    2097152    1G Linux swap
+/dev/sdb7   8472576   10569727    2097152    1G Microsoft basic data
+/dev/sdb8  10569728 7814037134 7803467407  3.6T Linux LVM
+
+# dumpe2fs -f /dev/sdb1
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Kernel_1
+Last mounted on:          <not available>
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      ext_attr resize_inode dir_index filetype sparse_super
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              5136
+Block count:              20480
+Reserved block count:     1024
+Free blocks:              16722
+Free inodes:              5124
+First block:              1
+Block size:               1024
+Fragment size:            1024
+Reserved GDT blocks:      79
+Blocks per group:         8192
+Fragments per group:      8192
+Inodes per group:         1712
+Inode blocks per group:   214
+RAID stride:              4
+RAID stripe width:        4
+Filesystem created:       Sat Oct 11 16:56:47 2014
+Last mount time:          n/a
+Last write time:          Sat Oct 11 16:57:16 2014
+Mount count:              1
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:56:47 2014
+Check interval:           0 (<none>)
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               128
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+. . .
+
+# dumpe2fs -f /dev/sdb2
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Kernel_2
+Last mounted on:          <not available>
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      ext_attr resize_inode dir_index filetype sparse_super
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              5136
+Block count:              20480
+Reserved block count:     1024
+Free blocks:              16722
+Free inodes:              5124
+First block:              1
+Block size:               1024
+Fragment size:            1024
+Reserved GDT blocks:      79
+Blocks per group:         8192
+Fragments per group:      8192
+Inodes per group:         1712
+Inode blocks per group:   214
+RAID stride:              4
+RAID stripe width:        4
+Filesystem created:       Sat Oct 11 16:56:48 2014
+Last mount time:          n/a
+Last write time:          Sat Oct 11 16:57:18 2014
+Mount count:              1
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:56:48 2014
+Check interval:           0 (<none>)
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               128
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+. . .
+
+# dumpe2fs -f /dev/sdb3
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Root_File_System
+Last mounted on:          /
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              65536
+Block count:              262144
+Reserved block count:     13107
+Free blocks:              141101
+Free inodes:              41671
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      63
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8192
+Inode blocks per group:   512
+Flex block group size:    16
+Filesystem created:       Sat Oct 11 16:56:49 2014
+Last mount time:          Sun Oct 12 02:22:59 2014
+Last write time:          Sun Oct 12 02:22:59 2014
+Mount count:              3
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:56:49 2014
+Check interval:           0 (<none>)
+Lifetime writes:          490 MB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Journal backup:           inode blocks
+Journal features:         (none)
+Total journal size:       32M
+Total journal blocks:     8192
+Max transaction length:   8192
+Fast commit length:       0
+Journal sequence:         0x000000a1
+Journal start:            0
+. . .
+
+# dumpe2fs -f /dev/sdb4
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Root_File_System
+Last mounted on:          /tmp/tmp.H6DnMta2Gb/cirrusDriveFS
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              65536
+Block count:              262144
+Reserved block count:     13107
+Free blocks:              141983
+Free inodes:              42028
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      63
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8192
+Inode blocks per group:   512
+Flex block group size:    16
+Filesystem created:       Sat Oct 11 16:56:51 2014
+Last mount time:          Sat Oct 11 16:57:42 2014
+Last write time:          Sat Oct 11 16:57:52 2014
+Mount count:              1
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:56:51 2014
+Check interval:           0 (<none>)
+Lifetime writes:          486 MB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Journal backup:           inode blocks
+Journal features:         (none)
+Total journal size:       32M
+Total journal blocks:     8192
+Max transaction length:   8192
+Fast commit length:       0
+Journal sequence:         0x00000005
+Journal start:            0
+. . .
+
+# dumpe2fs -f /dev/sdb5
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Config
+Last mounted on:          /usr/config
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              65536
+Block count:              262144
+Reserved block count:     13107
+Free blocks:              217930
+Free inodes:              65493
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      63
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8192
+Inode blocks per group:   512
+Flex block group size:    16
+Filesystem created:       Sat Oct 11 16:56:52 2014
+Last mount time:          Sun Oct 12 02:23:00 2014
+Last write time:          Sun Oct 12 02:23:00 2014
+Mount count:              3
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:56:52 2014
+Check interval:           0 (<none>)
+Lifetime writes:          156 MB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Journal backup:           inode blocks
+Journal features:         (none)
+Total journal size:       32M
+Total journal blocks:     8192
+Max transaction length:   8192
+Fast commit length:       0
+Journal sequence:         0x00000017
+Journal start:            0
+. . .
+
+# dumpe2fs -f /dev/sdb7
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Update
+Last mounted on:          <not available>
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              65536
+Block count:              262144
+Reserved block count:     13107
+Free blocks:              249506
+Free inodes:              65522
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      63
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8192
+Inode blocks per group:   512
+Flex block group size:    16
+Filesystem created:       Sat Oct 11 16:56:56 2014
+Last mount time:          Sun Oct 12 02:23:36 2014
+Last write time:          Sun Oct 12 02:23:36 2014
+Mount count:              2
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:56:56 2014
+Check interval:           0 (<none>)
+Lifetime writes:          32 MB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Journal backup:           inode blocks
+Journal features:         (none)
+Total journal size:       32M
+Total journal blocks:     8192
+Max transaction length:   8192
+Fast commit length:       0
+Journal sequence:         0x00000006
+Journal start:            0
+. . .
+
+# dumpe2fs -f /dev/vg1/lv1
+dumpe2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   Data
+Last mounted on:          /Data
+Filesystem UUID:          XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+Filesystem flags:         signed_directory_hash
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              60775680
+Block count:              60964544
+Reserved block count:     0
+Free blocks:              60684400
+Free inodes:              60775543
+First block:              0
+Block size:               65536
+Fragment size:            65536
+Reserved GDT blocks:      32
+Blocks per group:         65528
+Fragments per group:      65528
+Inodes per group:         65280
+Inode blocks per group:   255
+Flex block group size:    16
+Filesystem created:       Sat Oct 11 16:57:00 2014
+Last mount time:          Sun Oct 12 02:23:39 2014
+Last write time:          Sun Oct 12 02:23:39 2014
+Mount count:              2
+Maximum mount count:      -1
+Last checked:             Sat Oct 11 16:57:00 2014
+Check interval:           0 (<none>)
+Lifetime writes:          2062 MB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:               256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+Default directory hash:   half_md4
+Directory Hash Seed:      XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+Journal backup:           inode blocks
+Journal features:         (none)
+Total journal size:       2048M
+Total journal blocks:     32768
+Max transaction length:   32768
+Fast commit length:       0
+Journal sequence:         0x0000021d
+Journal start:            0
+. . .
+
+# pvdisplay
+  WARNING: PV /dev/sdb8 in VG vg1 is using an old PV header, modify the VG to update.
+  --- Physical volume ---
+  PV Name               /dev/sdb8
+  VG Name               vg1
+  PV Size               3.63 TiB / not usable 2.82 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              952571
+  Free PE               0
+  Allocated PE          952571
+  PV UUID               XXXXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXXXX
+
+# vgdisplay
+  WARNING: PV /dev/sdb8 in VG vg1 is using an old PV header, modify the VG to update.
+  --- Volume group ---
+  VG Name               vg1
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               3.63 TiB
+  PE Size               4.00 MiB
+  Total PE              952571
+  Alloc PE / Size       952571 / 3.63 TiB
+  Free  PE / Size       0 / 0
+  VG UUID               XXXXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXXXX
+
+# lvdisplay
+  WARNING: PV /dev/sdb8 in VG vg1 is using an old PV header, modify the VG to update.
+  --- Logical volume ---
+  LV Path                /dev/vg1/lv1
+  LV Name                lv1
+  VG Name                vg1
+  LV UUID                XXXXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXXXX
+  LV Write Access        read/write
+  LV Creation host, time ,
+  LV Status              available
+  # open                 0
+  LV Size                3.63 TiB
+  Current LE             952571
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     131064
+  Block device           254:0
+
