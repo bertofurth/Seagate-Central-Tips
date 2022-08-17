@@ -81,15 +81,14 @@ https://download.opensuse.org/distribution/openSUSE-current/live/
 
 ### Required software tools on the building Linux host
 #### sfdisk version later than 2.28 (2.37 or later is best)
-This procedure makes use of version 2.28 or later of the "sfdisk" hard drive
-partitioning tool. Version 2.37 or later is even better as these more recent
-versions will partition the disk in a slightly more efficient manner. 
+This procedure makes use of version 2.28 (circa 2016) or later of the
+"sfdisk" hard drive partitioning tool. Version 2.37 (circa 2022) or later 
+is even better as these more recent versions will partition the disk in a 
+slightly more efficient manner. 
 
 This tool should be available on any modern Linux system with software more
-recent than 2015 or so. Versions of sfdisk earlier than v2.26 cannot
+recent than 2016 or so. Versions of sfdisk earlier than v2.26 cannot
 manipulate the "GPT" style partition table as used by the Seagate Central.
-Versions earlier than v2.28 do not have the "--delete" flag which is
-also desireable in this procedure.
 
 Issue the "sfdisk -v" command as per the following example to
 confirm the version of "sfdisk" in your system.
