@@ -331,11 +331,17 @@ will be called **sdX**. You will need to modify the commands to use the actual
 drive name of the target hard drive in your system (probably "sdb" or "sdc").
 
 ### Wipe the existing partition table and data on the target hard drive
-The original partitioning on the target hard drive must be removed. This
-can be done using the following sfdisk command (version 2.28 and later).
-Be sure to replace sdX with the real name of the target drive. **Warning
-: This is an extremely dangerous command!! Make sure to specify the correct
-target drive name or you might destroy data on your computer!!**
+At this point in the procedure we wipe the original partitioning and data on the
+target hard drive. (N.B. Advanced users who are comfortable navigating Linux 
+parititoning and file systems can optionally try to keep the system's 
+configuration and Data by following the Technical Note at the bottom of
+this document entitled "Save the Config and Data partitions")
+
+Removing the drive parititoning can be done using the following sfdisk command
+(version 2.28 and later). Be sure to replace sdX with the real name of the
+target drive. **Warning : This is an extremely dangerous command!! Make sure
+to specify the correct target drive name or you might destroy data on your 
+computer!!**
 
     sfdisk --delete /dev/sdX
     
@@ -379,7 +385,7 @@ example
     6144+0 records out
     6442450944 bytes (6.4 GB, 6.0 GiB) copied, 86.7031 s, 74.3 MB/s
 
-### Create a new Seagate Central style partition table on the target hard drive
+### Create a new Seagate Central style partition table
 In this section we use the "sfdisk" tool (v2.28 or later, but ideally v2.37 or 
 later) to configure the partitions on the Seagate Central and then we format the
 partitions. 
@@ -457,6 +463,7 @@ Note that the "Start" and "End" values shown by the "sfdisk" command may be
 slightly different depending on the version of sfdisk you are using. The main
 thing is that the partitions are the right "Size", "Type" and in the right order.
 
+# Format the partitions
 Each partition on the drive must now be formatted using the commands listed
 below. Note the file system types (ext2, ext4 and swap) as well as options
 ("-O" parameter) are designed to exactly match those used on a Seagate Central drive.
@@ -477,7 +484,7 @@ operating system on a Seagate Central uses a non standard 64K memory page size.
     mkfs.ext4 -F -L Config -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX5
     mkfs.ext4 -F -L Update -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX7
 
-    # Partition 6 is a swap partition
+    # Format Partition 6 as a swap partition
     dd bs=65536 count=2 if=/dev/zero of=/dev/sdX6 
     mkswap -p65536 /dev/sdX6
     
@@ -718,20 +725,20 @@ parties. These do not need to be followed.
 
 #### Save the "Config" and "Data" partitions
 An alternative to wiping all the user and configuration Data on the Seagate
-Central Drive is to just try to replace the operating system components.
-This could be done in an initial attempt to fix a bricked unit. If this kind
-of attempt failed then you could move on to wiping the whole drive.
+Central Drive is to just replace the operating system components and save the
+system configuration and user Data. This could be done in an initial attempt
+to fix a bricked unit. If attempt failed then you could move on to the standard
+procedure involving wiping the whole drive.
 
-This can be done by following the procedure above with the following 
+This can be done by following the standard procedure above with the following 
 modifications.
 
-Skip the section entitled "Wipe the existing partition table and data on the
-target hard drive". We don't want to remove the existing partitioning table.
+Skip the sections entitled "Wipe the existing partition table and data on the
+target hard drive" and "Create a new Seagate Central style partition table". 
 
-In the section entitled "Create a new Seagate Central style partition table on 
-the target hard drive" only format The Kernel partititons (1 and 2) and the 
-Root Partititons (3 and 4). Do not format the Config, Update or Swap partititons
-(5, 7 and 6).
+In the section entitled "Format the partitions" only format The Kernel partititons
+(1 and 2) and the Root Partititons (3 and 4). Do not format the Config, Update or
+Swap partititons (5, 7 and 6).
 
 All of the rest of the procedure can be followed as written. Note that some of
 the commands involving partitions 5 and 7 might complain that some directories
