@@ -542,26 +542,26 @@ The following commands are used to prepare the partitions on the target drive wi
 the required folder structures and data. Remember to replace the firmware ".img" file
 name with the actual firmware image name you are using.
 
-    # The firmware images
+    # Copy the firmware images (Replace .img name with your firmware name)
     mkdir /tmp/SC-Config/firmware
     cp Seagate-HS-update-201509160008F.img /tmp/SC-Config/firmware/
     mkdir /tmp/SC-Update/local
     tar -C /tmp/SC-Update/local/ -zxpf /tmp/SC-Config/firmware/Seagate-HS-update-201509160008F.img
     
-    # The Primary Kernel
+    # Install the Primary Kernel
     cp /tmp/SC-Update/local/uImage /tmp/SC-Kernel_1/
 
-    # The Secondary Kernel
+    # Install the Secondary Kernel
     cp /tmp/SC-Update/local/uImage /tmp/SC-Kernel_2/
     
-    # The Primary Root File System
+    # Install the Primary Root File System
     unsquashfs -f -d /tmp/SC-Root_1/ /tmp/SC-Update/local/rfs.squashfs
     mkdir /tmp/SC-Root_1/shares
     chmod a+x /tmp/SC-Root_1/shares
     touch /tmp/SC-Root_1/etc/nas_shares.conf
     chmod 600 /tmp/SC-Root_1/etc/nas_shares.conf
 
-    # The Secondary Root File System
+    # Install the Secondary Root File System
     unsquashfs -f -d /tmp/SC-Root_2/ /tmp/SC-Update/local/rfs.squashfs
     mkdir /tmp/SC-Root_2/shares
     chmod a+x /tmp/SC-Root_2/shares
