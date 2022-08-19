@@ -463,7 +463,7 @@ Note that the "Start" and "End" values shown by the "sfdisk" command may be
 slightly different depending on the version of sfdisk you are using. The main
 thing is that the partitions are the right "Size", "Type" and in the right order.
 
-# Format the partitions
+### Format the partitions
 Each partition on the drive must now be formatted using the commands listed
 below. Note the file system types (ext2, ext4 and swap) as well as options
 ("-O" parameter) are designed to exactly match those used on a Seagate Central drive.
