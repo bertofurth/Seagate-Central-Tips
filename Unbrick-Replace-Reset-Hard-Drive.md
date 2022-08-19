@@ -727,8 +727,8 @@ parties. These do not need to be followed.
 An alternative to wiping all the user and configuration Data on the Seagate
 Central Drive is to just replace the operating system components and save the
 system configuration and user Data. This could be done in an initial attempt
-to fix a bricked unit. If attempt failed then you could move on to the standard
-procedure involving wiping the whole drive.
+to fix a bricked unit. If this attempt failed then you could move on to the
+standard procedure involving wiping the whole drive.
 
 This can be done by following the standard procedure above with the following 
 modifications.
@@ -747,7 +747,7 @@ or files already exist. These errors can be ignored.
 #### Manually create the Data partition
 As noted, the Seagate Central will automatically recreate the Data partition and the
 associated LVM volume if it detects that they are missing. For this reason it is
-not necessary to manually recreate the Data partition.
+not necessary to manually recreate the Data partition in this procedure.
 
 If, however, for some reason you did wish to manually recreate the Data partition
 before the unit boots up then it is not difficult to modify the procedure accordingly.
@@ -756,9 +756,9 @@ First, the "SC_part_table.txt" file needs to be modified to include a /dev/sdX8
 partition. The file included in this project has a commented out line corresponding
 to partititon 8 that can be easily uncommented to include this new partition.
 
-Apply all the partition creation and formatting instructions above but then at the end
-also create format the data partition as follows. Note that the lvm2 package will need
-to be installed on the building system.
+After executing all of the other commands, before removing the target drive from the
+building Linux system you can format the Data partition as follows. Note that the "lvm2" 
+package will need to be installed on the building system.
 
     # Partition 8 (The Data partition) uses Logical Volume Manager (lvm2)
     pvcreate -ff /dev/sdX8
@@ -779,28 +779,31 @@ The size of the individual partitions on the Seagate Central drive can be modifi
 in order to facilitate experimentation. This can be done by simply editing the
 appropriate entry in the "SC_part_table.txt" file before it is applied.
 
-For example the sdX3 and sdX4 root file system partitions might be increased in size from
-1GiB to 2GiB. This might allow extra cross compiled binaries to be installed on the unit.
+For example the sdX3 and sdX4 root file system partitions are each 1GiB by default. 
+It might be desirable to increase these to 2GiB to allow extra room for cross
+compiled binaries or experimentation.
 
-As another example, partitions sdX5 (Config) and sdX7 (Update) which are normally
-1GiB in size, never actually use more than about 350MiB so it would be safe to reduce
-these partititons from 1GiB each to, say, 0.5GiB.
+As another example, partitions sdX5 (Config) and sdX7 (Update) are normally
+1GiB in size. These partitions never use more than about 350MiB so it would be safe
+to reduce these partititons from 1GiB each to, say, 0.5GiB.
 
-Naturally, the order of the partitions and their file system type (ext2/ext4/swap) must
-not be modified.
+Naturally, the order of the partitions and their file system type (ext2/ext4/swap) 
+must not be modified.
 
-#### Troubleshooting weird error messages during partitioning
+#### Troubleshooting error messages during partitioning
 Sometimes strange problems with partitioning the target drive can be overcome
 by zeroing the first 6 GB of the drive. This will completely clear out any
-operating system or partitioning data. This can be done using the "dd"
-command as seen below. Remember to replace "sdX" with the actual drive name 
-corresponding to the target. 
+existing operating system or partitioning data on the target drive that might
+interfere with the procedure. 
+
+This can be done using the "dd" command as seen below. Remember to replace 
+"sdX" with the actual drive name corresponding to the target. 
 
     dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
         
 This command will take a few minutes to complete executing. 
 
-After the dd command has finished we suggest disconnecting the hard drive
+After the dd command has finished, we suggest disconnecting the hard drive
 reader, rebooting the system and then reconnecting the hard drive reader
 after the system has rebooted.
 
@@ -809,7 +812,7 @@ hard drive should now have no partitions (i.e. sdX1, sdX2, etc). Also note
 that the name of the drive **may change** after a system reboot.
 
 #### Partition characteristics of an original Seagate Central Drive
-Below are the file system characteristics of a "fresh out of the box" 
+Below are the partition characteristics of a "fresh out of the box" 
 Seagate Central drive as taken from a Seagate Central 4TB model. This
 is for reference purposes only.
 
