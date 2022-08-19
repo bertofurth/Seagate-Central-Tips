@@ -106,7 +106,8 @@ to the following may appear while running the sfdisk command
 #### squashfs tools (unsquashfs)    
 Ensure that the "unsquashfs" program (part of the "squashfs" /
 "squashfs-tools" package) is installed in order to read the Seagate
-Central firmware image. 
+Central firmware image. Most Linux systems do not natively include this
+tool so it will most likely need to be installed.
 
     # unsquashfs -v
     unsquashfs version 4.5.1 (2022/03/17)
