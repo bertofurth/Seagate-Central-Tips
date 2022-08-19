@@ -73,8 +73,8 @@ on the Linux system as well.
 If you only have a Windows system and do not have a Linux system then I can
 suggest using a USB based "Live" Linux system such as the ones supplied 
 by Debian, OpenSUSE or most other Linux distributions. I personally suggest
-either the "OpenSUSE Leap KDE Live X86_64" for GUI Linux or the "OpenSUSE LEAP 
-Rescue CD X86_64" for console only Linux. Both are fairly small images that allow you
+either the "OpenSUSE LEAP Rescue CD X86_64" for a console only Linux
+system. This Live system uses a fairly small image that allows you
 to easily log in as root and install the required Linux utilities. See
 
 https://en.opensuse.org/SDB:Create_a_Live_USB_stick_using_Windows
