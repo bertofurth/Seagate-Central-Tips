@@ -568,12 +568,17 @@ name with the actual firmware image name you are using.
     touch /tmp/SC-Root_2/etc/nas_shares.conf
     chmod 600 /tmp/SC-Root_2/etc/nas_shares.conf
     
- ### Optional -  Configure the Seagate Central to grant su / root access   
- The following set of **optional** commands will modify the firmware so that the 
- su / root access is enabled for the Seagate Central. It works by forcing the 
- system's root password to be set to the value XXXXX on first boot. You can
- modify this XXXXX value however we'll be changing the root password properly
- later in the procedure anyway.
+### Optional -  Configure the Seagate Central to grant su / root access   
+The following set of **optional** commands will modify the firmware so that
+su / root access is enabled for the Seagate Central. This is included here
+because recent versions of Seagate Central firmware disable root access by 
+default. Root access is useful for doing extra customization and 
+troubleshooting on the unit.
+
+This process works by creating a startup script that forces the system's root
+password to be set to the value XXXXX on first boot. (You can modify this XXXXX
+value below however we'll be changing the Seagate Central's root password 
+properly later in the procedure anyway.)
   
     cat << EOF > /tmp/SC-Root_1/etc/init.d/change-root-pw.sh
     #!/bin/bash
