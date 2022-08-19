@@ -403,9 +403,48 @@ lsblk command to view the new parititon table.
 The "lsblk" command should show that the target drive now has 7 partitions as per
 the example below.
 
-    # lsblk /dev/sdb
+    # cat SC_part_table.txt | sfdisk --force /dev/sdX
+    Checking that no-one is using this disk right now ... OK
+    
+    Disk /dev/sdX: 149.05 GiB, 160041885696 bytes, 312581808 sectors
+    Disk model: XXXXXX-XXXXXX
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 4096 bytes / 33553920 bytes
+    
+    >>> Script header accepted.
+    >>> Script header accepted.
+    >>> Script header accepted.
+    >>> Created a new GPT disklabel (GUID: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX).
+    /dev/sdX1: Created a new partition 1 of type 'Microsoft basic data' and of size 20 MiB.
+    /dev/sdX2: Created a new partition 2 of type 'Microsoft basic data' and of size 20 MiB.
+    /dev/sdX3: Created a new partition 3 of type 'Microsoft basic data' and of size 1 GiB.
+    /dev/sdX4: Created a new partition 4 of type 'Microsoft basic data' and of size 1 GiB.
+    /dev/sdX5: Created a new partition 5 of type 'Microsoft basic data' and of size 1 GiB.
+    /dev/sdX6: Created a new partition 6 of type 'Linux swap' and of size 1 GiB.
+    /dev/sdX7: Created a new partition 7 of type 'Microsoft basic data' and of size 1 GiB.
+    /dev/sdX8: Done.
+    
+    New situation:
+    Disklabel type: gpt
+    Disk identifier: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+    
+    Device       Start      End Sectors Size Type
+    /dev/sdX1     2048    43007   40960  20M Microsoft basic data
+    /dev/sdX2    43008    83967   40960  20M Microsoft basic data
+    /dev/sdX3    83968  2181119 2097152   1G Microsoft basic data
+    /dev/sdX4  2181120  4278271 2097152   1G Microsoft basic data
+    /dev/sdX5  4278272  6375423 2097152   1G Microsoft basic data
+    /dev/sdX6  6375424  8472575 2097152   1G Linux swap
+    /dev/sdX7  8472576 10569727 2097152   1G Microsoft basic data
+    
+    The partition table has been altered.
+    Calling ioctl() to re-read partition table.
+    Syncing disks.
+    # partprobe
+    # lsblk /dev/sdX
     NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-    sdb      8:32   0  2.5TB  0 disk
+    sdX      8:32   0 149.1G  0 disk
       sdb1   8:33   0    20M  0 part
       sdb2   8:34   0    20M  0 part
       sdb3   8:35   0     1G  0 part
@@ -414,13 +453,17 @@ the example below.
       sdb6   8:38   0     1G  0 part
       sdb7   8:39   0     1G  0 part
 
-Each partition on the drive must now be formatted using the commands listed
-below. Note the file system options specified with the "-O" parameter are
-designed to exactly match those used on a Seagate Central drive.
+Note that the "Start" and "End" values shown by the "sfdisk" command may be
+slightly different depending on the version of sfdisk you are using. The main
+thing is that the partitions are the right "Size", "Type" and in the right order.
 
-Also note that "mkswap" for partition 6 uses a non standard 65536 byte page size
-and the first page must be zeroed out first. This is because the Linux operating
-system on a Seagate Central uses a non standard 64K memory page size.
+Each partition on the drive must now be formatted using the commands listed
+below. Note the file system types (ext2, ext4 and swap) as well as options
+("-O" parameter) are designed to exactly match those used on a Seagate Central drive.
+
+Note also that "mkswap" for partition 6 uses a non standard 65536 byte page size
+and the first 2 pages are zeroed out first using "dd". This is because the Linux
+operating system on a Seagate Central uses a non standard 64K memory page size.
 
     # Format the Kernel Partitions 1 and 2 using ext2
     mkfs.ext2 -F -L Kernel_1 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sdX1
