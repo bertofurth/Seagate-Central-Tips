@@ -388,7 +388,8 @@ A template file in this project called "SC_part_table.txt" can be used
 by the sfdisk tool to create the same partition layout on a hard drive as a 
 native Seagate Central. This layout allocates all the "free" space at the
 end of the drive to the Data partition. (N.B. Advanced users could modify the
-partition table by editing this file appropriately.)
+partition table by editing this file appropriately. See the technical note at
+towards the end of this document.)
 
 The partition table can be applied to drive sdX using the commands below. Remember
 to substitute your actual target drive name for sdX. Run partprobe after the
