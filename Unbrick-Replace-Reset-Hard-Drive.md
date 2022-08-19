@@ -371,7 +371,13 @@ target drive name or you might destroy data on your computer!!**
 
     dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
         
-This command will take a few minutes to complete executing. 
+This command may take a few minutes to complete executing as per the following
+example
+
+    # dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sdX
+    6144+0 records in
+    6144+0 records out
+    6442450944 bytes (6.4 GB, 6.0 GiB) copied, 86.7031 s, 74.3 MB/s
 
 ### Create a new Seagate Central style partition table on the target hard drive
 In this section we use the "sfdisk" tool (v2.28 or later, but ideally v2.37 or 
