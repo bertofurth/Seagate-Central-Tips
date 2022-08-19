@@ -481,19 +481,17 @@ operating system on a Seagate Central uses a non standard 64K memory page size.
     dd bs=65536 count=2 if=/dev/zero of=/dev/sdX6 
     mkswap -p65536 /dev/sdX6
     
-Each of the "mkfs" commands above should generate output similar to the following
-example. 
+Each of the "mkfs" commands above should generate a status message at the end of the
+output similar to the following example. 
 
     # mkfs.ext4 -F -L .......
     mke2fs 1.46.5 (30-Dec-2021)
-    Creating filesystem with 262144 4k blocks and 65536 inodes
+    Creating filesystem with XXXXXX Xk blocks and XXXXX inodes
     Filesystem UUID: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-    Superblock backups stored on blocks:
-            32768, 98304, 163840, 229376
-    
+    . . .
+    . . .
     Allocating group tables: done
     Writing inode tables: done
-    Creating journal (8192 blocks): done
     Writing superblocks and filesystem accounting information: done
 
 The "dd" and "mkswap" command output should be similar to the following example.
