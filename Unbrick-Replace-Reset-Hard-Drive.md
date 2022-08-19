@@ -576,9 +576,9 @@ default. Root access is useful for doing extra customization and
 troubleshooting on the unit.
 
 This process works by creating a startup script that forces the system's root
-password to be set to the value XXXXX on first boot. (You can modify this XXXXX
-value below however we'll be changing the Seagate Central's root password 
-properly later in the procedure anyway.)
+password to be set to the value XXXXX just once on first bootup only. (You
+can modify this XXXXX value below however we'll be changing the Seagate 
+Central's root password properly later in the procedure anyway.)
   
     cat << EOF > /tmp/SC-Root_1/etc/init.d/change-root-pw.sh
     #!/bin/bash
