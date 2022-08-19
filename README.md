@@ -244,14 +244,13 @@ Some administrators prefer to use mode "711" since some servers need to
 be able to traverse some user's directories but not read the contents.
 
 ## Admin user home directory creation bug
-Recent versions of Seagate Central firmware have an unfortunate bug whereby
-when an administrator level user is created, the home directory for that
-user is set to /home/<username>. Earlier versions did not have this
-problem.
+Recent versions of Seagate Central firmware have an annoying but not 
+catastrophic bug whereby when an administrator level user is created, the
+home directory for that user is set to /home/username. 
 
 While using /home as the base for home directories is normal on standard
 Linux systems, it is not workable on a Seagate Central. This is because when
-a Seagate Central is upgraded, the root partition (which houses the home
+a Seagate Central is upgraded, the root partition (which houses the /home
 directories) is completely wiped out!
 
 The result of this is that when an admin level user logs in via ssh after
@@ -266,9 +265,9 @@ partition however it will be tedious to retrieve.)
 
 Instead, it is much better to have a home directory on the Data partition
 as normal users do. For this reason I would strongly reccommend that you
-change the home directory associated with all admin level users with the
-following style of "usermod" command. Remember to run the "cp" command
-shown to ensure the changes hold after a system reboot.
+manually change the home directory associated with all admin level users
+with the following style of "usermod" command. Remember to run the "cp"
+command shown to ensure the changes hold after a system reboot.
 
      usermod -d /Data/admin admin
      usermod -d /Data/admin2 admin2
