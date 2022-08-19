@@ -668,7 +668,8 @@ http://seagate-8ACB4F
 
 Another way of discovering the name and IP address of the unit it to run the 
 "nmblookup -S '*' " command on a Linux system connected to the same network as the
-Seagate Central. (This requires the "samba-client" package is installed).
+Seagate Central. (This requires the "samba-client" package to beinstalled on the
+system).
 
 This will print out the names and IP addresses of all devices providing SMB file
 sharing services on the local network. One of the devices will be called "SEAGATE-xxxxxx"
