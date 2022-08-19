@@ -170,6 +170,8 @@ See the document in this project called **Recover_Seagate_Central_Data.md**
 for detailed instructions on how to retrieve user Data from a physical hard 
 drive that has been removed from a Seagate Central.
 
+https://github.com/bertofurth/Seagate-Central-Tips/blob/main/Recover_Seagate_Central_Data.md
+
 ### Workspace preparation
 If not already done, download the files in this project to a new directory 
 on your Linux build machine. 
