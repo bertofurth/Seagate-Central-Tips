@@ -178,13 +178,13 @@ on your Linux build machine.
 
 For example, the following **git** command will download the 
 files in this project to a new subdirectory called 
-Seagate-Central-Samba
+Seagate-Central-Tips
 
-    git clone https://github.com/bertofurth/Seagate-Central-Samba.git
+    git clone https://github.com/bertofurth/Seagate-Central-Tips
     
 Alternately, the following **wget** and **unzip** commands will 
 download the files in this project to a new subdirectory called
-Seagate-Central-Samba-main
+Seagate-Central-Tips-main
 
     wget https://github.com/bertofurth/Seagate-Central-Tips/archive/refs/heads/main.zip
     unzip main.zip
