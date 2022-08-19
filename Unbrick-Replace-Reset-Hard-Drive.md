@@ -481,6 +481,32 @@ operating system on a Seagate Central uses a non standard 64K memory page size.
     dd bs=65536 count=2 if=/dev/zero of=/dev/sdX6 
     mkswap -p65536 /dev/sdX6
     
+Each of the "mkfs" commands above should generate output similar to the following
+example. 
+
+    # mkfs.ext4 -F -L .......
+    mke2fs 1.46.5 (30-Dec-2021)
+    Creating filesystem with 262144 4k blocks and 65536 inodes
+    Filesystem UUID: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+    Superblock backups stored on blocks:
+            32768, 98304, 163840, 229376
+    
+    Allocating group tables: done
+    Writing inode tables: done
+    Creating journal (8192 blocks): done
+    Writing superblocks and filesystem accounting information: done
+
+The "dd" and "mkswap" command output should be similar to the following example.
+
+    # dd bs=65536 count=2 if=/dev/zero of=/dev/sdX6
+    2+0 records in
+    2+0 records out
+    131072 bytes (131 kB, 128 KiB) copied, 0.0024024 s, 54.6 MB/s
+    # mkswap -p65536 /dev/sdX6
+    mkswap: Using user-specified page size 65536, instead of the system value 4096
+    Setting up swapspace version 1, size = 1023.9 MiB (1073676288 bytes)
+    no label, UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
 At this point the target drive is properly formatted.
 
 Note that we do not create the user Data partition (sdX8) in this procedure. This 
