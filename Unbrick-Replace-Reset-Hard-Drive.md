@@ -583,7 +583,7 @@ properly later in the procedure anyway.)
     cat << EOF > /tmp/SC-Root_1/etc/init.d/change-root-pw.sh
     #!/bin/bash
     
-    echo "CHANGING ROOT PASSWORD"
+    echo "CHANGING ROOT PASSWORD" > /dev/kmsg
     echo "root:XXXXX" | chpasswd
     pwconv
     cp /etc/passwd /usr/config/backupconfig/etc/passwd
