@@ -629,15 +629,16 @@ the metal frame and connecting it to the SATA interface.
 Note that the plastic lid can be left off the unit during the initial test run
 just in case there's a problem and the hard drive needs to be removed again.
 
-Reconnect the Ethernet cable and the power supply then power on the unit.
+Reconnect the Ethernet cable and the power supply then power on the Seagate
+Central.
 
-After poweing on, the LED status light visible from top of the unit should be
-solid amber for about 30 to 40 seconds. Then the LED will flash green for
+After powering on, the LED status light visible from top of the unit should be
+solid amber for about 30 to 40 seconds. Then, the LED will flash green for
 another 2 - 3 minutes indicating that the Linux kernel is loading. During this
-time you should be able to hear the hard drive operating. Finally
-the LED light should turn a solid green indicating that the inital bootup
-sequence is complete. After this the unit needs to be left for another
-minute or so for the system to completely initialize.
+time you should be able to hear the hard drive operating. Finally,
+the LED should turn a solid green indicating that the inital bootup sequence 
+is complete. After this the unit needs to be left for another minute or so 
+for the system to completely initialize.
 
 ### Connect to the Web Management Interface
 You can now login to the Seagate Central web management interface where you
