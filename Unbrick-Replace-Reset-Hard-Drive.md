@@ -374,7 +374,7 @@ target drive name or you might destroy data on your computer!!**
 This command will take a few minutes to complete executing. 
 
 ### Create a new Seagate Central style partition table on the target hard drive
-In this section we use the "sfdisk" tool (v2.26 or later, but ideally v2.37 or 
+In this section we use the "sfdisk" tool (v2.28 or later, but ideally v2.37 or 
 later) to configure the partitions on the Seagate Central and then we format the
 partitions. 
 
