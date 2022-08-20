@@ -279,10 +279,13 @@ in your system as the mount point). Note that the volume can be mounted as
 read-only by adding the "-o ro" flag to the end of the command.
 
     root# fuse2fs /dev/vg1/lv1 /mnt/tmp
+    /dev/vg1/lv1: recovering journal
     /dev/vg1/lv1: Writing to the journal is not supported.
+    Orphans detected; running e2fsck is recommended.
     root# cd /mnt/tmp
     root# ls    
     admin  admin.tm  anonftp  dbd  lost+found  mt-daapd  Public  twonky  TwonkyData
+
 
 At this point the volume will be mounted at the specified directory (in this case 
 /mnt/tmp) and the data in the partition should be available for copying as normal. 
