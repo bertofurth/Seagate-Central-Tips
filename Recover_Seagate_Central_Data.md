@@ -281,22 +281,30 @@ read-only by adding the "-o ro" flag to the end of the command.
     root# fuse2fs /dev/vg1/lv1 /mnt/tmp
     /dev/vg1/lv1: recovering journal
     /dev/vg1/lv1: Writing to the journal is not supported.
-    Orphans detected; running e2fsck is recommended.
-    root# cd /mnt/tmp
-    root# ls    
-    admin  admin.tm  anonftp  dbd  lost+found  mt-daapd  Public  twonky  TwonkyData
-
 
 At this point the volume will be mounted at the specified directory (in this case 
 /mnt/tmp) and the data in the partition should be available for copying as normal. 
+
+    root# cd /mnt/tmp
+    root# ls    
+    admin  admin.tm  anonftp  dbd  lost+found  mt-daapd  Public  twonky  TwonkyData
 
 Once you've finished using the parititon the volume can be unmounted as per the
 normal umount command as seen in the example below
 
     root# umount /mnt/tmp
 
+If you get an error message indicating "running e2fsck is recommended" then it would
+be advisable to unmount the partition and run the e2fsck command on the logical volume
+as per the example below and then mounting the volume again.
 
-
+    root# fuse2fs /dev/vg1/lv1 /mnt/tmp
+    /dev/vg1/lv1: recovering journal
+    /dev/vg1/lv1: Writing to the journal is not supported.
+    Orphans detected; running e2fsck is recommended.
+    root# umount /mnt/tmp
+    root# e2fsck /dev/vg1/lv1
+    
 ## Technical discussion
 ### Reasons why a Seagate Central Data partition is hard to access
 There are 3 things that make retrieving data from a Seagate Central hard drive
