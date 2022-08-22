@@ -172,7 +172,7 @@ system that will change the root password to XXXXX at next boot (we'll change th
 password later). I'd suggest just copying and pasting these commands a few lines at 
 a time in to your ssh session to ensure that no mistakes are made.
 
-    cat << EOF > /etc/rcS.d/S90change-root-pw.sh
+    cat << EOF > /etc/rcS.d/S99zzz-change-root-pw.sh
     #!/bin/bash
     echo "Changing root password" > /dev/kmsg
     echo "root:XXXXX" | chpasswd
@@ -182,7 +182,7 @@ a time in to your ssh session to ensure that no mistakes are made.
     echo "Finished changing root password" > /dev/kmsg
     EOF
     
-    chmod 770 /etc/rcS.d/S90change-root-pw.sh
+    chmod 770 /etc/rcS.d/S99zzz-change-root-pw.sh
 
 Once these commands have been executed, login to the Seagate Central Web Management
 page and reboot the unit (Settings -> Setup -> System -> Restart). You can of course
@@ -232,7 +232,7 @@ back to XXXXX.
 
 This can be done with the following command
 
-    rm /etc/rcS.d/S90change-root-pw.sh
+    rm /etc/rcS.d/S99zzz-change-root-pw.sh
     
 You now have su / root access on your Seagate Central!
 
