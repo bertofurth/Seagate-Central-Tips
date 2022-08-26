@@ -1,4 +1,4 @@
-# Disable Obselete and Unneeded Services on the Seagate Central
+# Disable Obsolete and Unneeded Services on the Seagate Central
 The Seagate Central comes with a number of services that are not
 useful to everyone. 
 
@@ -6,15 +6,15 @@ Some of these services continue to utilize CPU and memory even when
 they are marked as disabled with the Seagate Central Web Management 
 interface!!
 
-Here is a list of services I've manually disabled in order to ensure
-that they do not consume any resources on the Seagate Central. 
+Here is a list of services that can be manually disabled in order to
+ensure that they do not consume any resources on the Seagate Central. 
 
 Naturally you should not disable any services that you are currently 
 using.
 
 The changes will take effect on the next reboot.
 
-## Obselete Services 
+## Obsolete Services 
 Some services on the Seagate Central are no longer functional. These
 should be removed as they are not providing any useful functionality.
 
@@ -41,8 +41,8 @@ Run the following commands to disable the Media Server.
 
 Reboot the system to make the changes take effect.
 
-After the reboot, delete all the binaries and files associated with the
-defunct Seagate Media service by running the following commands
+After the reboot, optionally delete all the binaries and files associated
+with the defunct Seagate Media service by running the following commands
 
     rm -rf /media_server/
     find  /etc/ -name "*media_server*" -exec rm {} +
@@ -60,8 +60,8 @@ Run the following command to disable the Tappin service.
      
 Reboot the system to make the changes take effect.
 
-After the reboot, delete all the binaries and files associated with the
-defunct Tappin service by running the following commands
+After the reboot, optionally delete all the binaries and files associated
+with the defunct Tappin service by running the following commands
 
     rm -rf /apps/tappin
     find  /etc/ -name "*tappinAgent*" -exec rm {} +
@@ -84,7 +84,7 @@ Reinstate this service with the following command.
     update-rc.d media_server_daemon defaults 99
     
 ### vsFTPd : FTP daemon
-FTP and SFTP are file transfer protocols which have waned in popularilty
+FTP and SFTP are file transfer protocols which have waned in popularity
 over the last few years. Most modern networks do no make use of these protocols
 and instead prefer SAMBA or scp for file transfer.
 
