@@ -1,6 +1,6 @@
 # Disable Obsolete and Unneeded Services on the Seagate Central
-The Seagate Central comes with a number of services that are not
-useful to everyone. 
+The Seagate Central comes with a number of services that have become
+obselete and with other services that are not useful to everyone
 
 Some of these services continue to utilize CPU and memory even when
 they are marked as disabled with the Seagate Central Web Management 
@@ -13,6 +13,10 @@ Naturally you should not disable any services that you are currently
 using.
 
 The changes will take effect on the next reboot.
+
+The instructions in this procedure assume that you are logged into the
+Seagate Central as the root user or that you prepend the "su" command
+to all commands.
 
 ## Obsolete Services 
 Some services on the Seagate Central are no longer functional. These
