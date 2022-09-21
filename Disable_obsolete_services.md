@@ -92,7 +92,7 @@ FTP and SFTP are file transfer protocols which have waned in popularity
 over the last few years. Most modern networks do no make use of these protocols
 and instead prefer SAMBA or scp for file transfer.
 
-Run the following command to disable to vsFTPd service
+Run the following command to disable the vsFTPd service
 
     update-rc.d -f vsftpd remove
      
