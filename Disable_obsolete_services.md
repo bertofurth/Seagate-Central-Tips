@@ -36,6 +36,16 @@ Also note that if you upgrade the Linux kernel on your Seagate Central
 then you **must** also disable this service otherwise the unit will
 hang on boot.
 
+By disabling this service we stop the Seagate Central from spending
+cpu and memory resources on something that serves no purpose. In
+addition, some users have reported that this service generates thousands of
+files containing megabytes of rubbish data in the Public folder. These files
+start with the following names.
+
+     bootstrapdb
+     media_server_daemon.txt
+     messages
+     
 Run the following commands to disable the Media Server.
 
     update-rc.d -f media_server_daemon remove
@@ -45,8 +55,9 @@ Run the following commands to disable the Media Server.
 
 Reboot the system to make the changes take effect.
 
-After the reboot, optionally delete all the binaries and files associated
-with the defunct Seagate Media service by running the following commands
+After the reboot, it is suggested to delete all the binaries and files 
+associated with the defunct Seagate Media service by running the following 
+commands
 
     rm -rf /media_server/
     find  /etc/ -name "*media_server*" -exec rm {} +
