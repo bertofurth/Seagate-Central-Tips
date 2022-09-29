@@ -57,8 +57,8 @@ You'll need a "jewellers" screwdriver kit for the tiny screws and potentially
 a flat head pry tool to get the face plate and lid off the unit.
 
 I note here that I have never managed to open up a Seagate Central without
-cracking a little bit of the plastic cover, so don't feel too bad if you
-do too!
+cracking a little bit of the black plastic outer cover, so don't feel too 
+bad if you do too. The unit will still work just fine!
 
 ### A USB connected Hard Drive Reader / Adapter
 You'll need a USB hard drive reader suitable for a 3.5 inch SATA drive
@@ -70,7 +70,7 @@ style device.
 The alternative is to install the target hard drive inside the computer
 you're using for the recovery. This assumes that you are using a desktop 
 computer with a spare SATA port to house the extra hard disk. This is 
-obviously less convinient than using an external USB connected hard
+obviously less convenient than using an external USB connected hard
 drive reader.
 
 ### Root access on a building Linux System
@@ -219,8 +219,8 @@ Here is an example from a Raspberry PI 4B
       mmcblk0p2 179:2    0   500M  0 part [SWAP]
       mmcblk0p3 179:3    0 118.5G  0 part /
 
-Insert the hard drive you wish to install the fresh Segate Central operating
-system to in the USB hard drive reader and attach it to the building system. 
+Insert the hard drive you wish to install the fresh Seagate Central operating
+system to into the USB hard drive reader and attach it to the building system. 
 From this point we will call this drive the **target** hard drive.
 
 The target drive can either be the original drive from your Seagate Central that
@@ -278,11 +278,11 @@ drive name of the target hard drive in your system (probably "sdb" or "sdc").
 ### Wipe the existing partition table and data on the target hard drive
 At this point in the procedure we wipe the original partitioning and data on the
 target hard drive. (N.B. Advanced users who are comfortable navigating Linux 
-parititoning and file systems can optionally try to keep the system's 
+partitioning and file systems can optionally try to keep the system's 
 configuration and Data by following the Technical Note at the bottom of
 this document entitled "Save the Config and Data partitions")
 
-Removing the drive parititoning can be done using the following sfdisk command
+Removing the drive partitioning can be done using the following sfdisk command
 (version 2.28 and later). Be sure to replace sdX with the real name of the
 target drive. **Warning : This is an extremely dangerous command!! Make sure
 to specify the correct target drive name or you might destroy data on your 
@@ -311,9 +311,9 @@ partitions.
       mmcblk0p3 179:3    0 118.5G  0 part /
 
 If you are using a hard drive from a Seagate Central then it is advised that
-you "zero out" the first 6GiB of the drive. During the devlopment of this
+you "zero out" the first 6GiB of the drive. During the development of this
 procedure we found that a number of obscure issues can be overcome when
-re-partitioning a drive from a Segate central by performing this step.
+re-partitioning a drive from a Seagate Central by performing this step.
 
 This can be done using the "dd" command as seen below. Remember to replace
 "sdX" with the actual drive name corresponding to the target. **Warning : 
@@ -410,7 +410,7 @@ towards the end of this document.)
 The partition table can be applied to drive sdX using the commands below. Remember
 to substitute your actual target drive name for sdX. Run partprobe after the
 command has executed to force your system to re-read the partition table and the
-lsblk command to view the new parititon table.
+lsblk command to view the new partition table.
 
     cat SC_part_table.txt | sfdisk --force /dev/sdX
     partprobe
@@ -490,7 +490,7 @@ operating system on a Seagate Central uses a non standard 64K memory page size.
     mkfs.ext4 -F -L Root_File_System -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX3
     mkfs.ext4 -F -L Root_File_System -O  none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX4
 
-    # Format the Config and Update Partititons 5 and 7 using ext4
+    # Format the Config and Update Partitions 5 and 7 using ext4
     mkfs.ext4 -F -L Config -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX5
     mkfs.ext4 -F -L Update -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sdX7
 
@@ -546,7 +546,7 @@ to mount these partitions.
 
     mkdir /tmp/SC-Kernel_1 /tmp/SC-Kernel_2 /tmp/SC-Root_1 /tmp/SC-Root_2 /tmp/SC-Config /tmp/SC-Update
 
-Next we mount the partitions 
+Next, we mount the partitions 
 
     mount /dev/sdX1 /tmp/SC-Kernel_1
     mount /dev/sdX2 /tmp/SC-Kernel_2
@@ -653,7 +653,7 @@ After powering on, the LED status light visible from top of the unit should be
 solid amber for about 30 to 40 seconds. Then, the LED will flash green for
 another 2 - 3 minutes indicating that the Linux kernel is loading. During this
 time you should be able to hear the hard drive operating. Finally,
-the LED should turn a solid green indicating that the inital bootup sequence 
+the LED should turn a solid green indicating that the initial bootup sequence 
 is complete. After this the unit needs to be left for another minute or so 
 for the system to completely initialize.
 
@@ -683,9 +683,9 @@ unit as "0010758ACB4F" then you would browse to
 
 http://seagate-8ACB4F
 
-Another way of discovering the name and IP address of the unit it to run the 
+Another way of discovering the name and IP address of the unit is to run the 
 "nmblookup -S '*' " command on a Linux system connected to the same network as the
-Seagate Central. (This requires the "samba-client" package to beinstalled on the
+Seagate Central. (This requires the "samba-client" package to be installed on the
 system).
 
 This will print out the names and IP addresses of all devices providing SMB file
@@ -746,9 +746,9 @@ modifications.
 Skip the sections entitled "Wipe the existing partition table and data on the
 target hard drive" and "Create a new Seagate Central style partition table". 
 
-In the section entitled "Format the partitions" only format The Kernel partititons
-(1 and 2) and the Root Partititons (3 and 4). Do not format the Config, Update or
-Swap partititons (5, 7 and 6).
+In the section entitled "Format the partitions" only format The Kernel partitions
+(1 and 2) and the Root Partitions (3 and 4). Do not format the Config, Update or
+Swap partitions (5, 7 and 6).
 
 All of the rest of the procedure can be followed as written. Note that some of
 the commands involving partitions 5 and 7 might complain that some directories
@@ -764,7 +764,7 @@ before the unit boots up then it is not difficult to modify the procedure accord
 
 First, the "SC_part_table.txt" file needs to be modified to include a /dev/sdX8 
 partition. The file included in this project has a commented out line corresponding
-to partititon 8 that can be easily uncommented to include this new partition.
+to partition 8 that can be easily uncommented to include this new partition.
 
 After executing all of the other commands, before removing the target drive from the
 building Linux system you can format the Data partition as follows. Note that the "lvm2" 
@@ -795,7 +795,7 @@ compiled binaries or experimentation.
 
 As another example, partitions sdX5 (Config) and sdX7 (Update) are normally
 1GiB in size. These partitions never use more than about 350MiB so it would be safe
-to reduce these partititons from 1GiB each to, say, 0.5GiB.
+to reduce these partitions from 1GiB each to, say, 0.5GiB.
 
 Naturally, the order of the partitions and their file system type (ext2/ext4/swap) 
 must not be modified.
