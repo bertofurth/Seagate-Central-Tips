@@ -23,9 +23,9 @@ Some services on the Seagate Central are no longer functional. These
 should be removed as they are not providing any useful functionality.
 
 ### Seagate Media Server
-This was a service where you could view content on your Seagate Central 
-remotely or on your phone by registering an account with Seagate. This was
-discontinued as per the notice at
+Seagate Media Server was a service which would allow you to view content
+on your Seagate Central remotely or on your phone by registering an
+account with Seagate. This was discontinued as per the notice at
 
 https://www.seagate.com/us/en/support/downloads/seagate-media/
 
