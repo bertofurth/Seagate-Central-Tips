@@ -69,6 +69,9 @@ has been shutdown for some time as per the notice at
 
 https://www.seagate.com/us/en/support/kb/seagate-central-tappin-update-007647en/
 
+Starting this obselete service can add up to 20 seconds to the bootup 
+time of the unit so removing it is certainly to be encouraged.
+
 Run the following command to disable the Tappin service.
 
     update-rc.d -f tappinAgent remove
@@ -98,17 +101,6 @@ Reinstate this service with the following command.
 
     update-rc.d media_server_daemon defaults 99
     
-### vsFTPd : FTP daemon
-FTP and SFTP are file transfer protocols which have waned in popularity
-over the last few years. Most modern networks do no make use of these protocols
-and instead prefer SAMBA or scp for file transfer.
-
-Run the following command to disable the vsFTPd service
-
-    update-rc.d -f vsftpd remove
-     
-Reinstate this service with the following command.
-
-    update-rc.d media_server_daemon defaults 20     
+ 
     
     
