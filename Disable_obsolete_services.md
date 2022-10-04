@@ -4,10 +4,11 @@ obselete and with other services that are not useful to everyone
 
 Some of these services continue to utilize CPU and memory even when
 they are marked as disabled with the Seagate Central Web Management 
-interface!!
+interface!
 
-Here is a list of services that can be manually disabled in order to
-ensure that they do not consume any resources on the Seagate Central. 
+This document describes instructions to manually disable unneeded
+services in order to ensure that they do not consume any resources 
+on the Seagate Central. 
 
 Naturally you should not disable any services that you are currently 
 using.
@@ -25,28 +26,29 @@ should be removed as they are not providing any useful functionality.
 ### Seagate Media Server
 Seagate Media Server was a service which would allow you to view content
 on your Seagate Central remotely or on your phone by registering an
-account with Seagate. This was discontinued as per the notice at
+account with Seagate. This service is now completely defunct and does not
+work. It was discontinued in mid 2021 as per the notice at
 
 https://www.seagate.com/us/en/support/downloads/seagate-media/
 
 Note, this is different to the Twonky DLNA service that provides access to 
-media for player devices on your home network.
+media for player devices on your home network. The DLNA service is still 
+working.
 
-Also note that if you upgrade the Linux kernel on your Seagate Central
-then you **must** also disable this service otherwise the unit will
-hang on boot.
+By disabling the Seagate Media Service we stop the Seagate Central from spending
+cpu and memory resources on something that serves no purpose. This service
+can consume over 100MB of system memory if left activated.
 
-By disabling this service we stop the Seagate Central from spending
-cpu and memory resources on something that serves no purpose. In
-addition, some users have reported that this service generates thousands of
+In addition, some users have reported that this service generates thousands of
 files containing megabytes of rubbish data in the Public folder. These files
-start with the following names.
+start with the following names and are safe to delete.
 
      bootstrapdb
      media_server_daemon.txt
      messages
      
-Run the following commands to disable the Media Server.
+Run the following commands on the Seagate Central as root to disable the Seagate 
+Media Server.
 
     update-rc.d -f media_server_daemon remove
     update-rc.d -f media_server_ui_daemon remove
@@ -69,10 +71,11 @@ has been shutdown for some time as per the notice at
 
 https://www.seagate.com/us/en/support/kb/seagate-central-tappin-update-007647en/
 
-Starting this obselete service can add up to 20 seconds to the bootup 
+Starting this obsolete service can add up to 20 seconds to the bootup 
 time of the unit so removing it is certainly to be encouraged.
 
-Run the following command to disable the Tappin service.
+Run the following command on the Seagate Central as root to disable
+the defunct Tappin service.
 
     update-rc.d -f tappinAgent remove
      
