@@ -5,9 +5,9 @@ and a powerful Linux client connected to the same Gigabit Ethernet switch.
 
 Samba performance was tested by mounting the Seagate Central under test's Public 
 folder from the Linux client and repeatedly copying 1GiB files back and forth
-between the client and Seagate Central server. Note that an SMBv1 style connection
-was used with the original Seagate Central samba v3.5.16 and the more secure
-SMBv3.11 was used with the newer samba v4.14.6. 
+between the client and Seagate Central server. Note that an insecure SMBv1.0
+style connection was used with the original Seagate Central samba v3.5.16 and
+the more secure SMBv3.11 style was used with the newer samba v4.14.6. 
 
 ## Kernel Types Tested
 Original : Seagate Central stock Linux kernel (2.6.35.13-cavm1.whitney-econa.whitney-econa)
