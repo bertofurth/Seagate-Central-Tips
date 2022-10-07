@@ -63,7 +63,7 @@ different from each other. Most notably the samba file transfer speeds from the
 original system (Original Kernel + samba v3.5.16) are not significantly different
 to the speeds from an upgraded system (New Kernel + samba v4.14.6). This is most 
 likely due to the new SMP capability in the new kernel making the samba file server
-process more efficient, despite the reduction in raw rx speeds.
+process more efficient.
 
 
 
