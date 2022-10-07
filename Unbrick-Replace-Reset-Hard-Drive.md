@@ -592,6 +592,10 @@ because recent versions of Seagate Central firmware disable root access by
 default. Root access is useful for doing extra customization and 
 troubleshooting on the unit.
 
+There is no need to follow this part of the procedure if the Seagate firmware
+image you are using already enables root access. For example, if you're 
+using a custom built firmware image.
+
 This process works by creating a startup script that forces the system's root
 password to be set to the value XXXXX just once on first bootup only. (You
 can modify this XXXXX value below however we'll be changing the Seagate 
@@ -651,11 +655,11 @@ Central.
 
 After powering on, the LED status light visible from top of the unit should be
 solid amber for about 30 to 40 seconds. Then, the LED will flash green for
-another 2 - 3 minutes indicating that the Linux kernel is loading. During this
-time you should be able to hear the hard drive operating. Finally,
-the LED should turn a solid green indicating that the initial bootup sequence 
-is complete. After this the unit needs to be left for another minute or so 
-for the system to completely initialize.
+another 3 - 4 minutes indicating that the Linux kernel is loading and initial
+setup is occuring. During this time you should be able to hear the hard drive 
+operating. Finally, the LED should turn a solid green indicating that the 
+initial bootup sequence is complete. After this the unit needs to be left 
+for another minute or so for the system to completely initialize.
 
 ### Connect to the Web Management Interface
 You can now login to the Seagate Central web management interface where you
