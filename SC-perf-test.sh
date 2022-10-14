@@ -1,19 +1,18 @@
 #!/bin/bash
+# SC-perf-test.sh - Test performance of a file
+# server.
+#
+# See small_usage() below for details
 
-# SC-perf-test.sh <ip-address> <mount-point>
-
-# File size for transfer tests 1GiB (1073741824 bytes)
-
+# Defaults
 DEFAULT_SIZE=1073741824
 DEFAULT_REPS=10
 
 SIZE=${SIZE-$DEFAULT_SIZE}
+REPS=${REPS-$DEFAULT_REPS}
 
 # File name used for tests
 TEMP_FILE=DELETE-ME-SC-perf-test.bin
-
-# Number of times to repeat each test
-REPS=${REPS-$DEFAULT_REPS}
 
 small_usage()
 {
@@ -24,7 +23,8 @@ small_usage()
     echo
     echo "<mount-point> : The directory where the file server"
     echo "has been mounted. This is where files will be copied"
-    echo "from and to."
+    echo "from and to. See the comments within the script for"
+    echo "examples of mounting commands."
     echo ""
     echo "Make sure that the server is running 'iperf3 -s' and that"
     echo "the server has been mounted in the specified directory."
@@ -36,20 +36,26 @@ small_usage()
 
 # Examples for mounting samba shares.
 #
-# For normal samba server 192.0.2.99 you could use the following
-# to mount the "Public" directory.
+# Mounting is normally done as the root user. First create
+# a directory where the file server can be mounted. e.g.
 #
-#    mount.cifs //192.0.2.99/Public /mnt/NASX -o username=guest,password=guest,uid=berto,gid=users
+# mkdir /tmp/NASX
+#
+# For normal samba server 192.0.2.99 you could use the following
+# to mount the "Public" directory. "berto" is the name of the user
+# performing the tests.
+#
+#    mount.cifs //192.0.2.99/Public /tmp/NASX -o username=guest,password=guest,uid=berto,gid=users
 #
 # To mount the "admin" user's directory you could use
 #
-#    mount.cifs //192.0.2.99/admin /mnt/NASX -o username=admin,password=myadminpassword,uid=berto,gid=users
+#    mount.cifs //192.0.2.99/admin /tmp/NASX -o username=admin,password=myadminpassword,uid=berto,gid=users
 #
 # If you are testing a server running an old version of Samba
 # that uses SMBv1.0 then you may need to mount using the vers=1.0
 # parameter as follows.
 #
-#    mount.cifs //192.0.2.99/Public /mnt/NASX -o username=guest,password=guest,uid=berto,gid=users,vers=1.0
+#    mount.cifs //192.0.2.99/Public /tmp/NASX -o username=guest,password=guest,uid=berto,gid=users,vers=1.0
 # 
 
 IP_ADDR=$1
@@ -66,7 +72,6 @@ check_params()
 
     if [[ -z $DIR ]]; then
 	echo -e "Error : You must specify the directory where the server file system is mounted"
-	echo -e "See the $0 script for examples of how to mount an smb file system."
 	echo ""
 	small_usage
 	exit 1
@@ -103,49 +108,42 @@ check_file_transfer()
     rm -f $DIR/$TEMP_FILE
 }
 
+
 test_upload()
 {
-    # Create a file of the required size
-    if type fallocate > /dev/null ; then
-	# fallocate is much faster than dd
-	fallocate -l $SIZE $TEMP_FILE
-    else
-	dd if=/dev/random of=$TEMP_FILE bs=$SIZE count=1
-    fi
-    FILE_CREATE_RESULT=$?
-    if [[ $FILE_CREATE_RESULT -ne 0 ]]; then
-	echo -e "Unable to create $SIZE file for testing. Abandoning upload test"
-	return 1
-    fi
-
     echo ""
     echo "File copy upload speeds in KiBytes/sec from client to server mounted at $DIR"
     for ((i = 1 ; i <= $REPS ; i++)); do
-	RESULT=$(/usr/bin/time -f %e cp $TEMP_FILE $DIR 2>&1)
+
+	# We use dd if=/dev/zero rather than copying a
+	# local file on disk to reduce reliance on
+	# the client's disk peformance. Note also that we
+	# change the filename for each test
+	# to eliminate the possibility of any kind of
+	# intelligent caching on the server. 
+	RESULT=$(/usr/bin/time -o /dev/stdout -f %e dd if=/dev/zero of=$DIR/$TEMP_FILE-$i bs=$SIZE count=1 2>/dev/null)
 	if [[ $? -ne 0 ]]; then
 	    echo "Failed"
 	else
 	    echo "$SIZE / $RESULT / 1024" | bc
 	fi
-	rm $DIR/$TEMP_FILE
+
+	rm $DIR/$TEMP_FILE-$i
 	sleep 1
     done
 
-    rm -f $TEMP_FILE
 }
 
 test_download()
 {
 
-    # Create a file of the required size. We do this here
-    # to make sure that the local machine can actually
-    # store a file of the size that we're downloading.
+    # Create a file of the required size on the server.
     #
     if type fallocate > /dev/null ; then
-	# fallocate is much faster than dd
-	fallocate -l $SIZE $TEMP_FILE
+    	# fallocate is much faster than dd
+    	fallocate -l $SIZE $DIR/$TEMP_FILE
     else
-	dd if=/dev/random of=$TEMP_FILE bs=$SIZE count=1
+    	dd if=/dev/zero of=$DIR/TEMP_FILE bs=$SIZE count=1 2>&1
     fi
     FILE_CREATE_RESULT=$?
     if [[ $FILE_CREATE_RESULT -ne 0 ]]; then
@@ -153,20 +151,28 @@ test_download()
 	return 1
     fi
 
-    # Transfer the file to the server so it can then be downloaded
-    mv $TEMP_FILE $DIR
-    sleep 1
-    
     echo ""
     echo "File copy download speeds in KiBytes/sec from client to server mounted at $DIR"
     for ((i = 1 ; i <= $REPS ; i++)); do
-	RESULT=$(/usr/bin/time -f %e cp $DIR/$TEMP_FILE . 2>&1)
+	#
+	# Change the name of the file being copied for each
+	# test to make sure the file isn't cached either
+	# on the server or the client. Could also use
+	# vmtouch -e $DIR/$TEMP_FILE
+	#
+	mv $DIR/$TEMP_FILE $DIR/$TEMP_FILE-$i
+	sleep 1
+
+	# We copy the file to /dev/null rather than a normal
+	# file on disk to reduce variability introduced due
+	# to the client's disk performance.
+	RESULT=$(/usr/bin/time -f %e cp $DIR/$TEMP_FILE-$i /dev/null 2>&1)
 	if [[ $? -ne 0 ]]; then
 	    echo "Failed"
 	else
 	    echo "$SIZE / $RESULT / 1024" | bc
 	fi
-	rm $TEMP_FILE
+	mv $DIR/$TEMP_FILE-$i $DIR/$TEMP_FILE
 	sleep 1
     done
     rm $DIR/$TEMP_FILE
@@ -224,8 +230,11 @@ if [[ $RESULT -ne 0 ]]; then
     exit 1
 fi
 
-test_upload
+# File transfer tests
+#test_upload
 test_download
-test_iperf_upload
-test_iperf_download
+
+# Raw tcp throghput tests
+#test_iperf_upload
+#test_iperf_download
 
