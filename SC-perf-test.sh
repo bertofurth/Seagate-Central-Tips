@@ -231,10 +231,10 @@ if [[ $RESULT -ne 0 ]]; then
 fi
 
 # File transfer tests
-#test_upload
+test_upload
 test_download
 
 # Raw tcp throghput tests
-#test_iperf_upload
-#test_iperf_download
+test_iperf_upload
+test_iperf_download
 
