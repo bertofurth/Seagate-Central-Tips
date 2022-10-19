@@ -137,21 +137,33 @@ test_upload()
 test_download()
 {
 
+    echo ""
+
     # Create a file of the required size on the server.
     #
     if type fallocate > /dev/null ; then
-    	# fallocate is much faster than dd
+    	# fallocate is much faster than dd but doesn't always work
     	fallocate -l $SIZE $DIR/$TEMP_FILE
+	if [[ $? -ne 0 ]]; then
+	    echo "fallocate failed. Trying dd"
+	    echo ""
+	    USE_DD=1
+	fi
     else
-    	dd if=/dev/zero of=$DIR/TEMP_FILE bs=$SIZE count=1 2>&1
+	USE_DD=1
     fi
+
+    if [[ USE_DD -eq 1 ]]; then
+	dd if=/dev/zero of=$DIR/$TEMP_FILE bs=$SIZE count=1 2>/dev/null
+	echo ""
+    fi
+    # ls -l $DIR/$TEMP_FILE    
     FILE_CREATE_RESULT=$?
     if [[ $FILE_CREATE_RESULT -ne 0 ]]; then
 	echo -e "Unable to create $SIZE file for testing. Abandoning download test"
 	return 1
     fi
 
-    echo ""
     echo "File copy download speeds in KiBytes/sec from client to server mounted at $DIR"
     for ((i = 1 ; i <= $REPS ; i++)); do
 	#
