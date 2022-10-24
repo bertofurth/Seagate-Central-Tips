@@ -65,7 +65,7 @@ document in this project at
 https://github.com/bertofurth/Seagate-Central-Tips/blob/main/Unbrick-Replace-Reset-Hard-Drive.md
 
 ## Method 1 : "Planting" a Boot Script
-### ssh
+### ssh to the Seagate Central
 Secure Shell (ssh) is a means of securely connecting to and managing devices, such as
 the Seagate Central, via a network connection. It usually involves accessing a text
 based command prompt where commands can be issued to a device to control it and
