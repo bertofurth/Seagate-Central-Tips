@@ -105,6 +105,39 @@ Reinstate this service with the following command.
 
     update-rc.d media_server_daemon defaults 99
     
- 
+### Twonky DLNA media service    
+The Twonky DLNA media service is a proprietary and closed source media 
+server that allows media devices on the local network, such as DVD
+players, smart TVs and DVRs, to play media stored on the Seagate Central.
+(Note this is different from the Seagate Media Server which was
+discussed at the start of this document.)
+
+This service is useful in many cases, however not everyone uses it
+and the Twonky DLNA service can consume significant memory, CPU and
+disk resources. It should be disabled if it is not being used.
+
+Also note that there is an associated project that provides instructions
+for installing a much less resource hungry DLNA server called MiniDLNA at
+
+https://github.com/bertofurth/Seagate-Central-Utils/tree/main/minidlna
+
+The Twonky service can be disabled on the Seagate Central Management web
+page by navigating to the "Services" tab, selecting the "DLNA" icon, 
+then unchecking the "Enable" box.
+
+The Twonky service can also be disabled from the command line by running 
+the following commands on the Seagate Central. These commands will
+remove the ability of the Web Management tool to re-enable Twonky.
+
+    update-rc.d -f twonky remove
+    rm -rf /Data/TwonkyData/twonkycache
+    rm -rf /Data/TwonkyData/twonkydb    
+
+You can re-enable Twonky from the command line with the following command
+
+    update-rc.d twonky defaults 75
+
+
+
     
     
