@@ -344,7 +344,7 @@ in this project and let us know.
 ### The Layout of the Seagate Central Hard Drive
 The Seagate Central Hard drive contains a number of different partitions.
 
-Here we should the output of the "fdisk -l" command run on a Linux
+Here we show the output of the "fdisk -l" command run on a Linux
 machine with the Seagate Central drive connected using a USB
 hard drive reader.
 
@@ -384,6 +384,9 @@ The kernel will be loaded from one or the other of these partitions depending
 on which one is active. That is, one of them is active and the other acts
 as a backup however it is not straightforward to determine which partition
 is currently active unless the Seagate Central is up and running.
+
+At the Seagate Central shell prompt, use the "fw-printenv" command then
+search for the "current_kernel" variable to see which partition is active.
 
 # sda3 and sda4 : 1G Root file system
 These partitions contain the root file system which has all the important
