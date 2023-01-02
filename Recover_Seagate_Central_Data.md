@@ -211,10 +211,17 @@ very large external hard drive connected to your PC. Be aware that it can take
 a long time (days) to copy Terabytes of information between USB devices, especially
 if you're using a slower USB 2.0 style interface.
 
-Note again, that the "Trial" version of the Paragon Software only works properly
-for 10 days after installation. For this reason I recommend that you copy the 
-data over quickly so that you can ensure it's all retrieved before the software
-expires.
+Some users have reported that a "Destination Path Too Long" error message may appear
+when transferring files between very long path names. If this error appears then
+follow the instructions as per the following article
+
+https://www.howtogeek.com/266621/how-to-make-windows-10-accept-file-paths-over-260-characters/
+
+To summarize these instructions, make sure your Windows 10 system has the latest
+system updates installed, then use the "Registry Editor" tool to navigate to 
+"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem". If there is
+no existing DWORD named "LongPathsEnabled" then create it. Finally, modify the
+value of "LongPathsEnabled" to "1".
 
 ## Procedure for Linux
 Mounting a Seagate Central Data partition under Linux is not as straight forward
