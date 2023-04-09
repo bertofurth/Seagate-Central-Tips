@@ -330,6 +330,9 @@ example
     6144+0 records out
     6442450944 bytes (6.4 GB, 6.0 GiB) copied, 86.7031 s, 74.3 MB/s
 
+After zeroing out first part of the hard drive it is suggested that the building
+system be rebooted.
+
 ### Workspace preparation
 If not already done, download the files in this project to a new directory 
 on your Linux build machine. 
