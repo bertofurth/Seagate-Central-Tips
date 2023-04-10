@@ -3,6 +3,9 @@
 # server.
 #
 # See small_usage() below for details
+#
+# Note. iperf3 v3.11 or later client is recommended as
+# earlier versions may not work properly with the "-R" option.
 
 # Defaults
 DEFAULT_SIZE=1073741824
