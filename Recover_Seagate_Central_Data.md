@@ -14,7 +14,7 @@ about the Seagate Central drive partitioning scheme.
 * Connect the drive reader to your Windows machine
 * **DO NOT LET WINDOWS FORMAT OR WRITE TO THE DRIVE**
 * Take note of the assigned drive letter for the Data partition
-* Copy the required data to another device using Windows Explorer
+* Copy the required data to another location using Windows Explorer
 
 ## TLDNR - Linux
 * Connect the Seagate Central hard drive to a USB hard drive reader
@@ -22,6 +22,7 @@ about the Seagate Central drive partitioning scheme.
 * Connect the drive reader to your Linux system
 * Use the lvdisplay command to identify the Data parition LVM path
 * Mount the Data partition with the fuse2fs tool
+* Copy the required data to another location
 
 ## Prerequisites
 ### Be able to open up the Seagate Central
