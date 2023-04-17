@@ -237,11 +237,9 @@ This can be done with the following command
 You now have su / root access on your Seagate Central!
 
 ## Method 2 : Removing the Hard Drive and Connecting it to Another Computer 
-
-** NOTE : THIS METHOD IS EXTREMELY TEDIOUS. I HAVEN'T BOTHERED FULLY REFINING
-AND TESTING IT BECAUSE IT'S SO INVOLVED AND CONVOLUTED. I STRONGLY SUGGEST USING
-METHOD 1. IF FOR SOME REASON YOU HAVE TO USE THIS METHOD THEN LET ME KNOW IF
-IT WORKS OR DOESN'T WORK. **
+**NOTE: This method is extremely tedious and laborious.** I haven't bothered
+fully refining it or testing it because it's so convoluted. I **strongly**
+suggest using method 1 above. 
 
 This method involves mounting the Seagate Central hard drive on an external
 computer and manually modifying a bootup script to change the root password
@@ -615,9 +613,9 @@ file back to it's original state.
 
     sed -i '/root/Q' /etc/init.d/procps.sh
 
-** Note that the procps.sh file on the backup partition will still contain the
+**Note that the procps.sh file on the backup partition will still contain the
 root password changing commands so if the unit ever needs to fail over to the
 backup kernel (only if something goes catastrophically wrong), the root password
-will be reset back to XXXXX. **
+will be reset back to XXXXX.**
 
 
