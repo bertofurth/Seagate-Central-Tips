@@ -26,8 +26,8 @@ with new software.
 ### Seagate-Central-Samba
 https://github.com/bertofurth/Seagate-Central-Samba
 
-### Seagate-Central-Slot-In-v5.x-Kernel
-https://github.com/bertofurth/Seagate-Central-Slot-In-v5.x-Kernel
+### Seagate-Central-Modern-Slot-In-Kernel
+https://github.com/bertofurth/Seagate-Central-Modern-Slot-In-Kernel
 
 ### Seagate-Central-Utils
 https://github.com/bertofurth/Seagate-Central-Utils
@@ -142,7 +142,7 @@ devices, they are not very reliable if they are "unpowered".
 
 While testing the USB Video camera functionality as seen at
 
-https://github.com/bertofurth/Seagate-Central-Slot-In-v5.x-Kernel/blob/main/README_USB_DEVICE_MODULES.md
+https://github.com/bertofurth/Seagate-Central-Modern-Slot-In-Kernel/blob/main/README_USB_DEVICE_MODULES.md
 
 and
 
