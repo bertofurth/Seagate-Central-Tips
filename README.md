@@ -105,6 +105,7 @@ a user to "/bin/false" as per the following example
     Changing shell for myuser.
     Warning: "/bin/false" is not listed in /etc/shells.
     Shell changed.
+    # cp /etc/passwd /usr/config/backupconfig/etc/
           
 Note, if you get an error message "setpwnam: File exists" then this
 can be overcome by deleting "/etc/ptmp" and running the chsh command
@@ -216,7 +217,7 @@ that can be used to "break" these algorithms.
 That being said, if you are merely connecting to your own Seagate Central
 over your own trusted local network then it is possible to modify the configuration
 of your ssh client so that it allows the use of the "ssh-rsa" algorithm.
-this can be done by adding one of the following sets of configuration lines
+This can be done by adding one of the following sets of configuration lines
 to your ~/.ssh/config file. Make sure to adjust the IP addresses used in the
 examples below to match your local network. You may need to create this 
 ~/.ssh/config file if it does not already exist.
