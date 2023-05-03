@@ -2,6 +2,17 @@
 Tips for optimizing and fixing common problems on the Seagate
 Central NAS device.
 
+This document provides tips dealing with the following topics
+
+* Allow multiple users to access a Samba share
+* Stop particular users from logging in via ssh.
+* Storage Usage pie chart not correct.
+* Unreliable USB Hubs
+* User home directory security problem
+* Admin user home directory creation bug
+* ssh error "no matching key type found" 
+* Other cross compiled tools
+
 This document is a collection of suggestions, optimizations and 
 configuration changes I've made on my own Seagate Central NAS
 device to make it more useable as well as some procedures that attempt
@@ -15,31 +26,17 @@ with new software.
 ### Seagate-Central-Samba
 https://github.com/bertofurth/Seagate-Central-Samba
 
-A replacement Samba server for the Seagate Central that fixes
-the severe security issues with the old SMBv1.0 protocol and allows
-modern security conscious clients like Windows 10 to connect
-seamlessly to the Seagate Central. This project also provides
-an easy method to restore su/root access on a Seagate Central
-device.
- 
 ### Seagate-Central-Slot-In-v5.x-Kernel
 https://github.com/bertofurth/Seagate-Central-Slot-In-v5.x-Kernel
-
-A "slot in" modern kernel that allows the Seagate Central to
-use modern Linux operating system features such as SMP, IPv6
-and support for more modern services.
 
 ### Seagate-Central-Utils
 https://github.com/bertofurth/Seagate-Central-Utils
 
-Instructions for building and installing a variety of new tools
-and services on the Seagate Central.
-
 ### Seagate-Central-Toolchain
 https://github.com/bertofurth/Seagate-Central-Toolchain
 
-Generate a cross compilation toolchain that allows a fast building
-host to compile new software for the Seagate Central.
+### Seagate-Central-Debian
+https://github.com/bertofurth/Seagate-Central-Debian
 
 ## Allow multiple users to access a Samba share
 By default, only the user who is the owner of a network share is
@@ -137,7 +134,7 @@ Note that the process of calculating disk usage can take a very long
 time and is quite CPU intensive because the entire directory tree of
 the Data volume needs to be probed.
 
-## USB Hubs
+## Unreliable USB Hubs
 While USB hubs work with the Seagate Central to allow you to
 connect multiple storage devices and even other types of USB
 devices, they are not very reliable if they are "unpowered".
@@ -205,6 +202,38 @@ command shown to ensure the changes hold after a system reboot.
      usermod -d /Data/admin admin
      usermod -d /Data/admin2 admin2
      cp /etc/passwd /usr/config/backupconfig/etc/
+
+## ssh error "no matching key type found" 
+When connecting to the Seagate Central using ssh from a modern unix system,
+an error message similar to the following may appear
+
+    Unable to negotiate with 192.168.1.50 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss
+
+The "ssh-rsa" and "ssh-dsa" authentication keying systems which the Seagate
+Central uses have been deemed insecure due to the development of techniques
+that can be used to "break" these algorithms.
+
+That being said, if you are merely connecting to your own Seagate Central
+over your own trusted local network then it is possible to modify the configuration
+of your ssh client so that it allows the use of the "ssh-rsa" algorithm.
+this can be done by adding one of the following sets of configuration lines
+to your ~/.ssh/config file. Make sure to adjust the IP addresses used in the
+examples below to match your local network. You may need to create this 
+~/.ssh/config file if it does not already exist.
+
+### Allow access to any device on local private network using ssh-rsa
+
+    Host 192.168.*.* 10.*.*.*
+     HostKeyAlgorithms +ssh-rsa 
+
+### Allow access just to host 192.168.1.50 using ssh-rsa
+
+    Host 192.168.1.50
+     HostKeyAlgorithms +ssh-rsa 
+
+### Allow access to any remote device using ssh-rsa
+
+    HostKeyAlgorithms +ssh-rsa
 
 ## Other cross compiled tools
 I have installed the following useful tools that I haven't explicitly
