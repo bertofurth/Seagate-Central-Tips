@@ -1,0 +1,74 @@
+# Quick commands corresponding to a hard drive in /dev/sda. Assumes you are logged in as root
+# and that the firmware Seagate-HS-update-201509160008F.img is located in the current directory
+# Don't run these commands unless the hard drive you want to completely erase and reset is /dev/sda
+
+
+lsblk
+
+sfdisk --delete /dev/sda
+
+lsblk
+
+dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sda
+
+cat SC_part_table.txt | sfdisk --force /dev/sda
+partprobe
+lsblk /dev/sda
+
+# Format the Kernel Partitions 1 and 2 using ext2
+mkfs.ext2 -F -L Kernel_1 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sda1
+mkfs.ext2 -F -L Kernel_2 -O none,ext_attr,resize_inode,dir_index,filetype,sparse_super /dev/sda2
+
+# Format the Root Partitions 3 and 4 using ext4
+mkfs.ext4 -F -L Root_File_System -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sda3
+mkfs.ext4 -F -L Root_File_System -O  none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sda4
+
+# Format the Config and Update Partitions 5 and 7 using ext4
+mkfs.ext4 -F -L Config -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sda5
+mkfs.ext4 -F -L Update -O none,has_journal,ext_attr,resize_inode,dir_index,filetype,extent,flex_bg,sparse_super,large_file,huge_file,uninit_bg,dir_nlink,extra_isize /dev/sda7
+
+# Format Partition 6 as a swap partition
+dd bs=65536 count=2 if=/dev/zero of=/dev/sda6 
+mkswap -p65536 /dev/sda6
+
+mkdir /tmp/SC-Kernel_1 /tmp/SC-Kernel_2 /tmp/SC-Root_1 /tmp/SC-Root_2 /tmp/SC-Config /tmp/SC-Update
+
+mount /dev/sda1 /tmp/SC-Kernel_1
+mount /dev/sda2 /tmp/SC-Kernel_2
+mount /dev/sda3 /tmp/SC-Root_1
+mount /dev/sda4 /tmp/SC-Root_2
+mount /dev/sda5 /tmp/SC-Config
+mount /dev/sda7 /tmp/SC-Update
+
+# Copy the firmware images (Replace .img name with your firmware name)
+mkdir /tmp/SC-Config/firmware
+cp Seagate-HS-update-201509160008F.img /tmp/SC-Config/firmware/
+mkdir /tmp/SC-Update/local
+tar -C /tmp/SC-Update/local/ -zxpf /tmp/SC-Config/firmware/Seagate-HS-update-201509160008F.img
+
+# Install the Primary Kernel
+cp /tmp/SC-Update/local/uImage /tmp/SC-Kernel_1/
+
+# Install the Secondary Kernel
+cp /tmp/SC-Update/local/uImage /tmp/SC-Kernel_2/
+
+# Install the Primary Root File System
+unsquashfs -f -d /tmp/SC-Root_1/ /tmp/SC-Update/local/rfs.squashfs
+mkdir /tmp/SC-Root_1/shares
+chmod a+x /tmp/SC-Root_1/shares
+touch /tmp/SC-Root_1/etc/nas_shares.conf
+chmod 600 /tmp/SC-Root_1/etc/nas_shares.conf
+
+# Install the Secondary Root File System
+unsquashfs -f -d /tmp/SC-Root_2/ /tmp/SC-Update/local/rfs.squashfs
+mkdir /tmp/SC-Root_2/shares
+chmod a+x /tmp/SC-Root_2/shares
+touch /tmp/SC-Root_2/etc/nas_shares.conf
+chmod 600 /tmp/SC-Root_2/etc/nas_shares.conf
+
+umount /tmp/SC-Kernel_1
+umount /tmp/SC-Kernel_2
+umount /tmp/SC-Root_1
+umount /tmp/SC-Root_2
+umount /tmp/SC-Config
+umount /tmp/SC-Update
