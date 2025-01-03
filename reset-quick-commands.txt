@@ -7,6 +7,8 @@ lsblk
 
 sfdisk --delete /dev/sda
 
+# You'll most likely need to reboot the system you're running these commands on at this point
+
 lsblk
 
 dd status=progress bs=1048576 count=6144 if=/dev/zero of=/dev/sda
