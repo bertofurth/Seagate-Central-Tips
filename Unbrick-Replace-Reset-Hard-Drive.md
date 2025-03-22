@@ -10,9 +10,8 @@ This procedure can be used where a Seagate Central unit has become
 unresponsive or unusable and the existing drive needs to be reset. That 
 is, when a Seagate central has been "bricked". 
 
-It can also be used to replace the hard drive in a Seagate Central or to 
-create a temporary hard drive separate from your everyday/production drive
-to perform experiments with.
+It can also be used to replace on old hard drive in a Seagate Central with a
+new SATA hard drive or SSD. 
 
 Note that this procedure will wipe all the user data from the target hard
 drive. If you wish to recover user data from a Seagate Central hard drive
@@ -854,3 +853,26 @@ is for reference purposes only.
 
 Further details of individual file system characteristics are included in
 this project in the file called "profile-of-native-SC-disk.txt".  
+
+#### SSD in a Seagate Central
+I briefly tested installing a 2.5 inch SATA SSD drive in a Seagate Central
+using the procedure in this document and it seemed to work.
+
+The only problem is that most SATA SSD drives are 2.5 inch and the Seagate
+Central chassis doesn't natively accomodate the screw mounts on a 2.5 inch
+drive in it's 3.5 inch enclosure. If a 2.5 inch drive is just left connected
+to the SATA connector without being properly mounted then I suppose there's
+a possibility that after being shaken around the drive might become dislodged. 
+
+I think under normal circumstances and with a little care there shouldn't be
+a problem, especially given that SATA SSD drives tend to not weigh very much.
+
+There are 3.5 to 2.5 inch mounting bracket / conversion kits available however
+such a bracket would need to fit properly inside the Seagte Central and my own brief
+observation is that some kinds of kits would not be the right shape.
+
+The other thing to note it that my brief testing indicated that unfortunately
+the upload and download speeds between a client and a Seagate Central don't seem
+to significantly improve with an SSD installed in the Seagate Central. This is
+presumably because the main performance limiting factor of the Seagate Central 
+is the CPU of the unit and not the hard drive.
