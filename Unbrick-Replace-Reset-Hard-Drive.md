@@ -10,7 +10,7 @@ This procedure can be used where a Seagate Central unit has become
 unresponsive or unusable and the existing drive needs to be reset. That 
 is, when a Seagate central has been "bricked". 
 
-It can also be used to replace on old hard drive in a Seagate Central with a
+It can also be used to replace an old hard drive in a Seagate Central with a
 new SATA hard drive or SSD. 
 
 Note that this procedure will wipe all the user data from the target hard
