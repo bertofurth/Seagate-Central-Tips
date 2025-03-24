@@ -79,6 +79,22 @@ check_params()
 	small_usage
 	exit 1
     fi
+
+    if ! command -v time 2>&1 >/dev/null; then
+	echo -e "Error : The gnu time utility must be installed to use this script."
+	echo -e "For example, on debian,   sudo apt install time"
+	echo ""
+	small_usage
+	exit 1
+    fi
+
+    if ! command -v bc 2>&1 >/dev/null; then
+	echo -e "Error : The bc calculator tool must be installed to use this script."
+	echo -e "For example, on debian,   sudo apt install bc"
+	echo ""
+	small_usage
+	exit 1
+    fi
 }
 
 check_iperf()
@@ -167,7 +183,7 @@ test_download()
 	return 1
     fi
 
-    echo "File copy download speeds in KiBytes/sec from client to server mounted at $DIR"
+    echo "File copy download speeds in KiBytes/sec from server mounted at $DIR to client"
     for ((i = 1 ; i <= $REPS ; i++)); do
 	#
 	# Change the name of the file being copied for each
@@ -233,23 +249,29 @@ echo "Performing $REPS repetitions per test. Each test is $SIZE bytes."
 
 check_iperf
 RESULT=$?
+IPERF=0
 if [[ $RESULT -ne 0 ]]; then
-    echo Exiting. iperf check failed
-    exit 1
+    echo iperf check failed. Skipping iperf test.
+    IPERF=1
 fi
 
 check_file_transfer
 RESULT=$?
+FILETRANSFER=0
 if [[ $RESULT -ne 0 ]]; then
-    echo Exiting. File Transfer check failed.
-    exit 1
+    echo File Transfer check failed. Skipping File Transfer.
+    FILETRANSFER=1
 fi
 
 # File transfer tests
-test_upload
-test_download
+if [[ $FILETRANSFER -eq 0 ]]; then
+    test_upload
+    test_download
+fi
 
 # Raw tcp throghput tests
-test_iperf_upload
-test_iperf_download
+if [[ $IPERF -eq 0 ]]; then
+    test_iperf_upload
+    test_iperf_download
+fi
 
